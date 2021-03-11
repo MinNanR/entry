@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    url: jdbc:mysql://minnan.site:3306/entry?serverTimezone=Asia/Shanghai&allowMultiQueries=true
+    username: jilin
+    password: minnan.site#$
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  redis:
+    host: minnan.site
+    port: 6379
+    database: 3
+    password: minnan
+
+server:
+  port: 8130
+
+jwt:
+  route:
+    authentication:
+      path: /entry/auth/login*/**, /swagger*/**, /webjars/**, /v2/**
+  header: Authorization
+  expiration: 604800
+  scret: jilin#
+
+logging:
+  file:
+    name: ./logs/entry.log
+
+mybatis-plus:
+  mapper-locations: /site/minnan/recordlife/domain/mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
