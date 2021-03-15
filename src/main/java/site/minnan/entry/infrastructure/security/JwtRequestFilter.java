@@ -3,6 +3,7 @@ package site.minnan.entry.infrastructure.security;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ArrayUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Value("${jwt.header}")
     private String authenticationHeader;
+
+    @Value("${jwt.route.authentication.path}")
+    private String[] authenticationPath;
 
     @Autowired
     @Qualifier(value = "userService")

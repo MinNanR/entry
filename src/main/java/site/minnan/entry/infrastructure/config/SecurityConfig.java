@@ -59,7 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(authenticationPath).permitAll()
-                .anyRequest().authenticated()
+//                .anyRequest().authenticated()
 
                 .and()
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
@@ -73,7 +73,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         //对于在header里面增加token等类似情况，放行所有OPTIONS请求。
-        web.ignoring().antMatchers(HttpMethod.OPTIONS, "/**");
+        web.ignoring()
+                .antMatchers(HttpMethod.OPTIONS, "/**")
+                .antMatchers(HttpMethod.GET, authenticationPath);
         super.configure(web);
     }
 

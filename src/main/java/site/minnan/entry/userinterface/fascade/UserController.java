@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import site.minnan.entry.domain.vo.ListQueryVO;
 import site.minnan.entry.domain.vo.user.UserVO;
+import site.minnan.entry.userinterface.dto.ListQueryDTO;
 import site.minnan.entry.userinterface.dto.user.GetUserListDTO;
 import site.minnan.entry.userinterface.response.ResponseEntity;
 
@@ -20,7 +22,7 @@ public class UserController {
 
     @ApiOperation("添加用户")
     @PostMapping("addUser")
-    public ResponseEntity<UserVO> getUserVO(@RequestBody @Valid GetUserListDTO dto){
+    public ResponseEntity<ListQueryVO<UserVO>> getUserVO(@RequestBody @Valid GetUserListDTO dto){
 
         return ResponseEntity.success(null);
     }
