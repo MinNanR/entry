@@ -8,14 +8,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.minnan.entry.domain.entity.JwtUser;
 import site.minnan.entry.domain.entity.ModifiableEntity;
+import site.minnan.entry.infrastructure.enumerate.LocationType;
 
-import java.sql.Timestamp;
-
+/**
+ * 工作人员（口岸/酒店）
+ *
+ * @author Minnan on 2021/3/16
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@TableName("entry_train_record")
-public class TrainRecord extends ModifiableEntity {
+@TableName("entry_staff")
+public class Staff extends ModifiableEntity {
 
     /**
      * id
@@ -24,34 +28,30 @@ public class TrainRecord extends ModifiableEntity {
     private Integer id;
 
     /**
-     * 车牌号
+     * 账号id
      */
-    private String cardNumber;
+    private Integer userId;
 
     /**
-     * 司机姓名
+     * 工作人员姓名
      */
-    private String driverName;
+    private String staffName;
 
     /**
-     * 司机电话号码
+     * 工作地点id
      */
-    private String driverPhone;
+    private Integer locationId;
 
     /**
-     * 送往的酒店id
+     * 工作地点名称
      */
-    private Integer hotelId;
+    private String locationName;
 
     /**
-     * 送往的酒店名称
+     * 工作地点类型
      */
-    private String hotelName;
+    private LocationType locationType;
 
-    /**
-     * 出发时间
-     */
-    private Timestamp departureTime;
 
     /**
      * 设置创建者

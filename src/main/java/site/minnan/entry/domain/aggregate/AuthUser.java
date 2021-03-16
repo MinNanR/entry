@@ -8,16 +8,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import site.minnan.entry.domain.entity.JwtUser;
+import site.minnan.entry.domain.entity.ModifiableEntity;
 import site.minnan.entry.infrastructure.enumerate.Role;
-
-import java.sql.Timestamp;
 
 @TableName("auth_user")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthUser {
+public class AuthUser extends ModifiableEntity {
 
     /**
      * id
@@ -56,36 +55,6 @@ public class AuthUser {
     private String passwordStamp;
 
     /**
-     * 创建时间
-     */
-    private Timestamp createTime;
-
-    /**
-     * 创建人id
-     */
-    private Integer createUserId;
-
-    /**
-     * 创建人姓名
-     */
-    private String createUserName;
-
-    /**
-     * 更新时间
-     */
-    private Timestamp updateTime;
-
-    /**
-     * 更新人id
-     */
-    private Integer updateUserId;
-
-    /**
-     * 更新人姓名
-     */
-    private String updateUserName;
-
-    /**
      * 启用状态
      */
     public final static Integer ENABLE = 1;
@@ -96,27 +65,10 @@ public class AuthUser {
     public final static Integer DISABLE = 0;
 
     public void setCreateUser(JwtUser user) {
-        Timestamp current = new Timestamp(System.currentTimeMillis());
-        this.createUserId = user.getId();
-        this.createUserName = user.getUsername();
-        this.createTime = current;
-        this.updateUserId = user.getId();
-        this.updateUserName = user.getUsername();
-        this.updateTime = current;
-    }
-
-    public void setCreateUser(Integer userId, String userName){
-        Timestamp current = new Timestamp(System.currentTimeMillis());
-        this.createUserId = userId;
-        this.createUserName = userName;
-        this.createTime = current;
-        this.updateUserId = userId;
-        this.updateUserName = userName;
-        this.updateTime = current;
+        super.setCreateUser(user.getId(), user.getRealName());
     }
 
     public void setUpdateUser(JwtUser user) {
-        this.updateUserId = user.getId();
-        this.updateUserName = user.getUsername();
+        setUpdateUser(user.getId(), user.getRealName());
     }
 }

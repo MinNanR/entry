@@ -2,6 +2,7 @@ package site.minnan.entry.userinterface.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,16 +24,19 @@ public class ResponseEntity<T>{
     /**
      * 响应状态码
      */
+    @ApiModelProperty(value = "响应码", hidden = true)
     private String code;
 
     /**
-     * 相应消息
+     * 响应消息
      */
+    @ApiModelProperty(value = "响应消息", hidden = true)
     private String message;
 
     /**
      * 相应内容
      */
+    @ApiModelProperty("响应数据")
     private T data;
 
     private ResponseEntity(ResponseCode responseCode) {

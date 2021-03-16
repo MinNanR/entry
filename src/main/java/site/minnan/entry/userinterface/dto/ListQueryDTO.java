@@ -15,11 +15,11 @@ import javax.validation.constraints.NotNull;
 @Data
 public class ListQueryDTO {
 
-    @ApiModelProperty(value = "页码", required = true)
+    @ApiModelProperty(value = "页码", required = true, example = "1")
     @NotNull(message = "页码不能为空")
     private Integer pageIndex;
 
-    @ApiModelProperty(value = "每页显示数量", required = true)
+    @ApiModelProperty(value = "每页显示数量", required = true, example = "10")
     @NotNull(message = "显示数量不能为空")
     private Integer pageSize;
 }

@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * SpringSecurity配置
+ *
  * @author Minnan on 2020/12/16
  */
 @Component
@@ -46,11 +47,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .exceptionHandling()
                 .authenticationEntryPoint((request, response, ex) -> {
-                    log.error("登录异常", ex);
-                    if(ex instanceof InsufficientAuthenticationException){
+                    if (ex instanceof InsufficientAuthenticationException) {
+                        log.warn("调用接口缺失用户身份");
                         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "缺失用户身份");
-                    }
-                    else{
+                    } else {
+                        log.error("登录异常", ex);
                         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
                     }
                 })
@@ -59,7 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(authenticationPath).permitAll()
-//                .anyRequest().authenticated()
+                .anyRequest().authenticated()
 
                 .and()
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
@@ -80,7 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

@@ -1,8 +1,6 @@
 package site.minnan.entry.domain.entity;
 
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,22 +15,34 @@ import java.sql.Timestamp;
 @Getter
 public abstract class ModifiableEntity {
 
-    @ApiModelProperty("创建者id")
+    /**
+     * 创建者id
+     */
     private Integer createUserId;
 
-    @ApiModelProperty("创建者姓名")
-    private String createUsername;
+    /**
+     * 创建者姓名
+     */
+    private String createUserName;
 
-    @ApiModelProperty("创建时间")
+    /**
+     * 创建时间
+     */
     private Timestamp createTime;
 
-    @ApiModelProperty("更新人id")
+    /**
+     * 更新人id
+     */
     private Integer updateUserId;
 
-    @ApiModelProperty("更新人姓名")
-    private String updateUsername;
+    /**
+     * 更新人姓名
+     */
+    private String updateUserName;
 
-    @ApiModelProperty("更新时间")
+    /**
+     * 更新时间
+     */
     private Timestamp updateTime;
 
     /**
@@ -51,13 +61,13 @@ public abstract class ModifiableEntity {
 
     public void setCreateUser(Integer userId, String username, Timestamp createTime) {
         this.createUserId = this.updateUserId = userId;
-        this.createUsername = this.updateUsername = username;
+        this.createUserName = this.updateUserName = username;
         this.createTime = this.updateTime = createTime;
     }
 
     public void setUpdateUser(Integer userId, String username, Timestamp createTime) {
         this.updateUserId = userId;
-        this.updateUsername = username;
+        this.updateUserName = username;
         this.updateTime = createTime;
     }
 
