@@ -1,6 +1,7 @@
 package site.minnan.entry.application.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.digest.MD5;
 import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
@@ -11,11 +12,14 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import site.minnan.entry.application.provider.StaffProviderService;
 import site.minnan.entry.application.service.AuthService;
 import site.minnan.entry.domain.aggregate.AuthUser;
+import site.minnan.entry.domain.aggregate.Staff;
 import site.minnan.entry.domain.entity.JwtUser;
 import site.minnan.entry.domain.mapper.AuthUserMapper;
 import site.minnan.entry.domain.vo.auth.LoginVO;
+import site.minnan.entry.infrastructure.enumerate.Role;
 import site.minnan.entry.infrastructure.utils.JwtUtil;
 import site.minnan.entry.infrastructure.utils.RedisUtil;
 
@@ -28,6 +32,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private AuthUserMapper authUserMapper;
+
+    @Autowired
+    private StaffProviderService staffProviderService;
 
     @Autowired
     private RedisUtil redisUtil;
@@ -63,11 +70,16 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public LoginVO generateLoginVO(Authentication authentication) {
         JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
-        String token = jwtUtil.generateToken(jwtUser);
+        String token = "Bearer " + jwtUtil.generateToken(jwtUser);
         String role =
                 jwtUser.getAuthorities().stream().map(GrantedAuthority::getAuthority).findFirst().orElse("");
-
-        return null;
+        LoginVO vo = new LoginVO(token, role);
+        vo.setRealName(jwtUser.getRealName());
+        if (!Role.ADMIN.getValue().equals(role)) {
+            Staff staff = staffProviderService.getStaffByUser(jwtUser.getId());
+            vo.setLocationName(staff.getLocationName());
+        }
+        return vo;
     }
 
     private Optional<AuthUser> getAuthUser(String username) {
@@ -82,5 +94,9 @@ public class AuthServiceImpl implements AuthService {
         Optional<AuthUser> userOptional = Optional.ofNullable(userInDB);
         userOptional.ifPresent(user -> redisUtil.setValue("authUser::" + username, user, Duration.ofMinutes(30)));
         return userOptional;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(MD5.create().digestHex("123456"));
     }
 }

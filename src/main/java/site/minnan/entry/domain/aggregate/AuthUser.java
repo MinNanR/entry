@@ -32,7 +32,7 @@ public class AuthUser extends ModifiableEntity {
     /**
      * 昵称
      */
-    private String nickName;
+    private String realName;
 
     /**
      * 密码

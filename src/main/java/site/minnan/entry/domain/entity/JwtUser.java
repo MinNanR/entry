@@ -117,6 +117,7 @@ public class JwtUser implements UserDetails {
         return JwtUser.builder()
                 .id(authUser.getId())
                 .username(authUser.getUsername())
+                .realName(authUser.getRealName())
                 .password(authUser.getPassword())
                 .authorities(grantedAuthorities)
                 .enabled(authUser.getEnabled().equals(1))

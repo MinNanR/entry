@@ -3,10 +3,13 @@ package site.minnan.entry.userinterface.fascade;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import site.minnan.entry.application.service.LocationService;
 import site.minnan.entry.domain.vo.ListQueryVO;
 import site.minnan.entry.domain.vo.location.LocationVO;
 import site.minnan.entry.userinterface.dto.location.AddLocationDTO;
@@ -21,9 +24,14 @@ import javax.validation.Valid;
 @RequestMapping("/entry/location")
 public class LocationController {
 
+    @Autowired
+    private LocationService locationService;
+
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ApiOperation("添加位置")
     @PostMapping("addLocation")
     public ResponseEntity<?> addLocation(@RequestBody @Valid AddLocationDTO dto) {
+        locationService.addLocation(dto);
         return ResponseEntity.success();
     }
 

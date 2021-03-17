@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.minnan.entry.domain.entity.JwtUser;
@@ -18,6 +19,7 @@ import site.minnan.entry.infrastructure.enumerate.LocationType;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Builder
 @TableName("entry_staff")
 public class Staff extends ModifiableEntity {
 
@@ -71,5 +73,13 @@ public class Staff extends ModifiableEntity {
     @Override
     public void setUpdateUser(JwtUser jwtUser) {
         super.setUpdateUser(jwtUser.getId(), jwtUser.getRealName());
+    }
+
+    public Staff(AuthUser user, Location location) {
+        this.userId = user.getId();
+        this.staffName = user.getRealName();
+        this.locationId = location.getId();
+        this.locationName = location.getName();
+        this.locationType = location.getType();
     }
 }

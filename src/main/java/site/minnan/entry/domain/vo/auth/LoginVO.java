@@ -1,5 +1,6 @@
 package site.minnan.entry.domain.vo.auth;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiResponse;
@@ -9,9 +10,8 @@ import lombok.Data;
 
 
 @ApiModel("登录数据")
-@Builder
 @Data
-@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LoginVO {
 
     @ApiModelProperty("登录token")
@@ -25,4 +25,9 @@ public class LoginVO {
 
     @ApiModelProperty("工作地点名称")
     private String locationName;
+
+    public LoginVO(String authority, String role){
+        this.authority = authority;
+        this.role = role;
+    }
 }

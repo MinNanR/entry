@@ -65,39 +65,42 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
             String requestTokenHeader = request.getHeader(authenticationHeader);
             String username = null;
             String jwtToken = null;
             //获取token
-            if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
-                jwtToken = requestTokenHeader.substring(7);
-                try {
-                    username = jwtUtil.getUsernameFromToken(jwtToken);
-                } catch (IllegalArgumentException e) {
-                    log.info("获取token信息失败");
-                } catch (ExpiredJwtException e) {
-                    log.info("token已过期");
-                }
-                if (username != null) {
-                    JwtUser userDetails = (JwtUser) userDetailsService.loadUserByUsername(username);
-                    if (jwtUtil.validateToken(jwtToken, userDetails)) {
-                        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails,
-                                null, userDetails.getAuthorities());
-                        token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        SecurityContextHolder.getContext().setAuthentication(token);
-                        Date expireDate = jwtUtil.getExpirationDateFromToken(jwtToken);
-                        long leftTime = DateUtil.between(expireDate, DateTime.now(), DateUnit.HOUR);
-                        if (leftTime < 24L) {
-                            JwtUser jwtUser = (JwtUser) token.getPrincipal();
-                            String newToken = jwtUtil.generateToken(jwtUser);
-                            response.addHeader("newToken", newToken);
+            if (requestTokenHeader != null) {
+                if (requestTokenHeader.startsWith("Bearer ")) {
+                    jwtToken = requestTokenHeader.substring(7);
+                    try {
+                        username = jwtUtil.getUsernameFromToken(jwtToken);
+                    } catch (IllegalArgumentException e) {
+                        log.info("获取token信息失败");
+                    } catch (ExpiredJwtException e) {
+                        log.info("token已过期");
+                    }
+                    if (username != null) {
+                        JwtUser userDetails = (JwtUser) userDetailsService.loadUserByUsername(username);
+                        if (jwtUtil.validateToken(jwtToken, userDetails)) {
+                            UsernamePasswordAuthenticationToken token =
+                                    new UsernamePasswordAuthenticationToken(userDetails,
+                                    null, userDetails.getAuthorities());
+                            token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                            SecurityContextHolder.getContext().setAuthentication(token);
+                            Date expireDate = jwtUtil.getExpirationDateFromToken(jwtToken);
+                            long leftTime = DateUtil.between(expireDate, DateTime.now(), DateUnit.HOUR);
+                            if (leftTime < 24L) {
+                                JwtUser jwtUser = (JwtUser) token.getPrincipal();
+                                String newToken = jwtUtil.generateToken(jwtUser);
+                                response.addHeader("newToken", newToken);
+                            }
                         }
                     }
-                }
-            } else {
-                if (!"OPTIONS".equals(request.getMethod())) {
-                    log.warn("JWT Token does not begin with bearer String");
+                } else {
+                    if (!"OPTIONS".equals(request.getMethod())) {
+                        log.warn("JWT Token does not begin with bearer String");
+                    }
                 }
             }
         }

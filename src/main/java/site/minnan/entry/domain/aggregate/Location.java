@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.minnan.entry.domain.entity.JwtUser;
@@ -18,6 +19,7 @@ import site.minnan.entry.infrastructure.enumerate.LocationType;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Builder
 @TableName("entry_location")
 public class Location extends ModifiableEntity {
 

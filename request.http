@@ -1,0 +1,23 @@
+POST {{baseUrl}}/auth/login/password
+Content-Type: application/json
+
+{
+  "username": "min",
+  "password": "e10adc3949ba59abbe56e057f20f883e"
+}
+
+
+> {% client.global.set("admin_token", response.body.data.authority); %}
+
+###
+POST {{baseUrl}}/location/addLocation
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "address": "香洲区环岛东路",
+  "city": "珠海",
+  "locationName": "横琴口岸",
+  "locationType": "PORT",
+  "province": "广东"
+}

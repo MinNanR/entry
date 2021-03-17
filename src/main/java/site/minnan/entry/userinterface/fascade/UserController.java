@@ -3,7 +3,9 @@ package site.minnan.entry.userinterface.fascade;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import site.minnan.entry.application.service.UserService;
 import site.minnan.entry.domain.vo.ListQueryVO;
 import site.minnan.entry.domain.vo.user.UserInfoVO;
 import site.minnan.entry.domain.vo.user.UserVO;
@@ -21,10 +23,13 @@ import javax.validation.constraints.NotNull;
 @RequestMapping("/entry/user")
 public class UserController {
 
+    @Autowired
+    private UserService userService;
 
     @ApiOperation("添加用户")
     @PostMapping("addUser")
     public ResponseEntity<?> addUser(@RequestBody @Valid AddUserDTO dto) {
+        userService.addUser(dto);
         return ResponseEntity.success();
     }
 

@@ -21,6 +21,7 @@ jwt:
   header: Authorization
   expiration: 604800
   scret: jilin#
+  initiatedPassword: 123456
 
 logging:
   file:
