@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.minnan.entry.domain.entity.JwtUser;
 import site.minnan.entry.domain.entity.ModifiableEntity;
+import site.minnan.entry.infrastructure.enumerate.LocationType;
 
 /**
  * 地点实体（口岸/酒店）
@@ -30,6 +31,11 @@ public class Location extends ModifiableEntity {
      * 名称
      */
     private String name;
+
+    /**
+     * 地点类型（口岸/酒店）
+     */
+    private LocationType type;
 
     /**
      * 省份

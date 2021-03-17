@@ -31,7 +31,7 @@ public class Train extends ModifiableEntity {
     /**
      * 车牌号
      */
-    private String cardNumber;
+    private String carNumber;
 
     /**
      * 司机姓名
