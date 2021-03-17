@@ -26,12 +26,12 @@ import java.util.Date;
 @TableName("entry_traveler")
 public class Traveler extends ModifiableEntity {
 
-    @TableId(type = IdType.AUTO)
+
     /**
      *id
      */
+    @TableId(type = IdType.AUTO)
     private Integer id;
-
     /**
      * 旅客姓名
      */

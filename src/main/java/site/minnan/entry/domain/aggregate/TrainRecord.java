@@ -11,6 +11,10 @@ import site.minnan.entry.domain.entity.ModifiableEntity;
 
 import java.sql.Timestamp;
 
+/**
+ * 车次记录
+ * @author Minnan on 2021/03/15
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
