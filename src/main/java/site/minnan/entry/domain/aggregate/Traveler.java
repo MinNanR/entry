@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import site.minnan.entry.domain.entity.JwtUser;
 import site.minnan.entry.domain.entity.ModifiableEntity;
 import site.minnan.entry.infrastructure.enumerate.Gender;
+import site.minnan.entry.infrastructure.enumerate.TravelerStatus;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -80,7 +81,7 @@ public class Traveler extends ModifiableEntity {
     /**
      * 车次id
      */
-    private Integer trainRecordId;
+    private Integer trainId;
 
     /**
      * 送往酒店时间（入住时间）
@@ -106,6 +107,11 @@ public class Traveler extends ModifiableEntity {
      * 隔离结束时间
      */
     private Timestamp quarantineEndTime;
+
+    /**
+     * 旅客状态
+     */
+    private TravelerStatus status;
 
     /**
      * 设置创建者

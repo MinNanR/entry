@@ -66,7 +66,7 @@ public class AuthServiceImpl implements AuthService {
         String token = jwtUtil.generateToken(jwtUser);
         String role =
                 jwtUser.getAuthorities().stream().map(GrantedAuthority::getAuthority).findFirst().orElse("");
-        return new LoginVO(StrUtil.format("Bearer {}", token), role);
+        return null;
     }
 
     private Optional<AuthUser> getAuthUser(String username) {

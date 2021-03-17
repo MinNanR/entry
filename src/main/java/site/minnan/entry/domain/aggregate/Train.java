@@ -13,13 +13,14 @@ import java.sql.Timestamp;
 
 /**
  * 车次记录
+ *
  * @author Minnan on 2021/03/15
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @TableName("entry_train_record")
-public class TrainRecord extends ModifiableEntity {
+public class Train extends ModifiableEntity {
 
     /**
      * id
@@ -43,6 +44,16 @@ public class TrainRecord extends ModifiableEntity {
     private String driverPhone;
 
     /**
+     * 跟车人姓名
+     */
+    private String followerName;
+
+    /**
+     * 跟车人电话
+     */
+    private String followerPhone;
+
+    /**
      * 送往的酒店id
      */
     private Integer hotelId;
@@ -56,6 +67,11 @@ public class TrainRecord extends ModifiableEntity {
      * 出发时间
      */
     private Timestamp departureTime;
+
+    /**
+     * 抵达时间
+     */
+    private Timestamp arriveTime;
 
     /**
      * 设置创建者

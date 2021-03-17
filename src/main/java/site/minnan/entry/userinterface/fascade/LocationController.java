@@ -30,7 +30,6 @@ public class LocationController {
     @ApiOperation("获取位置列表")
     @PostMapping("getLocationList")
     public ResponseEntity<ListQueryVO<LocationVO>> getLocationVO(@RequestBody @Valid GetLocationListDTO dto) {
-
         return null;
     }
 

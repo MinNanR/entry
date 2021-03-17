@@ -18,9 +18,9 @@ public enum LocationType {
     @JsonValue
     private final String type;
 
-    LocationType(String value, String roleName) {
+    LocationType(String value, String type) {
         this.value = value;
-        this.type = roleName;
+        this.type = type;
     }
 
     public String getValue() {

@@ -2,14 +2,11 @@ package site.minnan.entry.userinterface.fascade;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.annotations.ApiParam;
+import org.springframework.web.bind.annotation.*;
 import site.minnan.entry.domain.vo.ListQueryVO;
 import site.minnan.entry.domain.vo.user.UserInfoVO;
 import site.minnan.entry.domain.vo.user.UserVO;
-import site.minnan.entry.userinterface.dto.DetailsQueryDTO;
 import site.minnan.entry.userinterface.dto.user.AddUserDTO;
 import site.minnan.entry.userinterface.dto.user.GetUserListDTO;
 import site.minnan.entry.userinterface.dto.user.UpdatePasswordDTO;
@@ -17,6 +14,7 @@ import site.minnan.entry.userinterface.dto.user.UpdateUserDTO;
 import site.minnan.entry.userinterface.response.ResponseEntity;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 @Api(tags = "用户")
 @RestController
@@ -50,19 +48,21 @@ public class UserController {
 
     @ApiOperation("获取当前用户信息")
     @PostMapping("getUserInfo")
-    public ResponseEntity<UserInfoVO> getUserInfo(){
+    public ResponseEntity<UserInfoVO> getUserInfo() {
         return ResponseEntity.success(null);
     }
 
     @ApiOperation("禁用用户")
-    @PostMapping("disableUser")
-    public ResponseEntity<?> disableUser(@RequestBody @Valid DetailsQueryDTO dto){
+    @PostMapping("disableUser/{id}")
+    public ResponseEntity<?> disableUser(@ApiParam(value = "用户id", required = true, example = "1")
+                                         @RequestBody @PathVariable("id") @NotNull(message = "未指定禁用的用户") Integer id) {
         return ResponseEntity.success();
     }
 
     @ApiOperation("启用用户")
-    @PostMapping("enableUser")
-    public ResponseEntity<?> enableUser(@RequestBody @Valid DetailsQueryDTO dto){
+    @PostMapping("enableUser/{id}")
+    public ResponseEntity<?> enableUser(@ApiParam(value = "用户id", required = true, example = "1")
+                                        @Valid @PathVariable("id") @NotNull(message = "未指定启用的用户") Integer id) {
         return ResponseEntity.success();
     }
 }

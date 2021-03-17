@@ -32,5 +32,14 @@ public class TravelerVO {
     @ApiModelProperty(value = "抵达酒店时间（格式：yyyy-MM-dd HH:mm）", example = "2021-03-16 18:00")
     private String arrivalTime;
 
+    @ApiModelProperty(value = "送往的酒店", example = "荔湾酒店")
+    private String hotelName;
+
+    @ApiModelProperty(value = "状态", example = "隔离中")
+    private String status;
+
+    @ApiModelProperty(value = "状态码",example = "QUARANTINE",allowableValues = "ENTRY-已入境,TRANSPORTING-运输中," +
+            "ARRIVE-已抵达酒店,QUARANTINE-隔离中,RELEASED-已解除隔离")
+    private String statusCode;
 
 }

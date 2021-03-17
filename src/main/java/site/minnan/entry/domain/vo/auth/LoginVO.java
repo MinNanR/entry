@@ -19,4 +19,10 @@ public class LoginVO {
 
     @ApiModelProperty("角色")
     private String role;
+
+    @ApiModelProperty("真实姓名")
+    private String realName;
+
+    @ApiModelProperty("工作地点名称")
+    private String locationName;
 }

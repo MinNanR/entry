@@ -18,16 +18,16 @@ public enum Gender {
     @JsonValue
     private final String gender;
 
-    Gender(String value, String roleName) {
+    Gender(String value, String gender) {
         this.value = value;
-        this.gender = roleName;
+        this.gender = gender;
     }
 
     public String getValue(){
         return value;
     }
 
-    public String getRoleName(){
+    public String getGender(){
         return gender;
     }
 }

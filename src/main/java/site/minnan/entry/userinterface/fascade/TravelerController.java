@@ -1,19 +1,18 @@
 package site.minnan.entry.userinterface.fascade;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.annotations.*;
+import org.springframework.web.bind.annotation.*;
 import site.minnan.entry.domain.vo.ListQueryVO;
+import site.minnan.entry.domain.vo.traveler.HotelData;
+import site.minnan.entry.domain.vo.traveler.NationalityStatistics;
 import site.minnan.entry.domain.vo.traveler.TravelerVO;
 import site.minnan.entry.userinterface.dto.traveler.AddTravelerDTO;
 import site.minnan.entry.userinterface.dto.traveler.GetTravelerListDTO;
+import site.minnan.entry.userinterface.dto.traveler.StartQuarantineDTO;
 import site.minnan.entry.userinterface.response.ResponseEntity;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 @Api(tags = "旅客")
 @RestController
@@ -27,10 +26,47 @@ public class TravelerController {
     }
 
     @ApiOperation("人员明细")
-    @PostMapping
+    @PostMapping("getTravelerList")
     public ResponseEntity<ListQueryVO<TravelerVO>> getTravelerList(@RequestBody @Valid GetTravelerListDTO dto) {
         return ResponseEntity.success(null);
     }
 
+    @ApiOperation("查询指定车次上的乘客")
+    @PostMapping("getTravelerListByTrain/{id}")
+    public ResponseEntity<ListQueryVO<TravelerVO>> getTravelerListByTrain(
+            @ApiParam(value = "车次id", required = true, example = "1") @Valid @PathVariable("id") @NotNull(message =
+                    "未指定查询的车次") Integer trainId) {
+        return ResponseEntity.success(null);
+    }
 
+    @ApiOperation("查询指定酒店的在店旅客")
+    @PostMapping("getTravelerListByHotel")
+    public ResponseEntity<ListQueryVO<TravelerVO>> getTravelerListByHotel() {
+        return ResponseEntity.success(null);
+    }
+
+    @ApiOperation("开始隔离")
+    @PostMapping("startQuarantine")
+    public ResponseEntity<?> startQuarantine(@RequestBody @Valid StartQuarantineDTO dto) {
+        return ResponseEntity.success();
+    }
+
+    @ApiOperation("结束隔离")
+    @PostMapping("endQuarantine/{id}")
+    public ResponseEntity<?> endQuarantine(@ApiParam(value = "旅客id", required = true, example = "1") @Valid @PathVariable("id")
+                                               @NotNull(message = "未指定结束隔离的旅客") Integer travelerId) {
+        return ResponseEntity.success();
+    }
+
+    @ApiOperation("酒店数据面板")
+    @PostMapping("getHotelData")
+    public ResponseEntity<HotelData> getHotelData(){
+        return ResponseEntity.success(null);
+    }
+
+    @ApiModelProperty("人员国籍归属分析")
+    @PostMapping("getNationalityStatistics")
+    public ResponseEntity<NationalityStatistics> getNationalityStatistics(){
+        return ResponseEntity.success(null);
+    }
 }

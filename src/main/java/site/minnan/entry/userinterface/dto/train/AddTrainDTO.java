@@ -1,4 +1,4 @@
-package site.minnan.entry.userinterface.dto.trainrecord;
+package site.minnan.entry.userinterface.dto.train;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 
 @ApiModel("创建车次参数")
 @Data
-public class AddTrainRecordDTO {
+public class AddTrainDTO {
 
     @ApiModelProperty(value = "车牌号", required = true, example = "粤S3888Q")
     @NotEmpty(message = "车牌号码不能为空")
@@ -22,6 +22,14 @@ public class AddTrainRecordDTO {
     @ApiModelProperty(value = "司机电话号码", required = true, example = "13813812138")
     @NotEmpty(message = "司机电话不能为空")
     private String driverPhone;
+
+    @ApiModelProperty(value = "跟车人姓名", required = true, example = "张无忌")
+    @NotEmpty(message = "跟车人姓名不能为空")
+    private String followerName;
+
+    @ApiModelProperty(value = "跟车人电话号码", required = true, example = "17373737733")
+    @NotEmpty(message = "跟车人电话号码不能为空")
+    private String followerPhone;
 
     @ApiModelProperty(value = "目的地酒店id", required = true, example = "2")
     @NotNull
