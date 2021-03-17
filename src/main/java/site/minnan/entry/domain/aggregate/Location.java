@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 import site.minnan.entry.domain.entity.JwtUser;
 import site.minnan.entry.domain.entity.ModifiableEntity;
 import site.minnan.entry.infrastructure.enumerate.LocationType;
+import site.minnan.entry.userinterface.dto.location.UpdateLocationDTO;
+
+import java.util.Optional;
 
 /**
  * 地点实体（口岸/酒店）
@@ -72,5 +75,12 @@ public class Location extends ModifiableEntity {
     @Override
     public void setUpdateUser(JwtUser jwtUser) {
         super.setUpdateUser(jwtUser.getId(), jwtUser.getRealName());
+    }
+
+    public void update(UpdateLocationDTO dto) {
+        Optional.ofNullable(dto.getLocationName()).ifPresent(s -> this.name = s);
+        Optional.ofNullable(dto.getProvince()).ifPresent(s -> this.province = s);
+        Optional.ofNullable(dto.getCity()).ifPresent(s -> this.city = s);
+        Optional.ofNullable(dto.getAddress()).ifPresent(s -> this.address = s);
     }
 }

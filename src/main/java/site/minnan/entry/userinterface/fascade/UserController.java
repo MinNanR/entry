@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import site.minnan.entry.application.service.UserService;
 import site.minnan.entry.domain.vo.ListQueryVO;
@@ -26,6 +27,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ApiOperation("添加用户")
     @PostMapping("addUser")
     public ResponseEntity<?> addUser(@RequestBody @Valid AddUserDTO dto) {
@@ -36,7 +38,8 @@ public class UserController {
     @ApiOperation("查询用户")
     @PostMapping("getUserList")
     public ResponseEntity<ListQueryVO<UserVO>> getUserVO(@RequestBody @Valid GetUserListDTO dto) {
-        return ResponseEntity.success(null);
+        ListQueryVO<UserVO> vo = userService.getUserList(dto);
+        return ResponseEntity.success(vo);
     }
 
     @ApiOperation("修改指定用户的密码")

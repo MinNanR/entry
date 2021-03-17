@@ -1,9 +1,11 @@
 package site.minnan.entry.domain.vo.location;
 
+import cn.hutool.core.date.DateUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Data;
+import site.minnan.entry.domain.aggregate.Location;
 
 /**
  * 位置列表展示数据
@@ -36,4 +38,15 @@ public class LocationVO {
     @ApiModelProperty(value = "更新时间（格式：yyyy-MM-dd HH:mm", example = "2021-03-16 09:00")
     private String updateTime;
 
+    public static LocationVO assemble(Location location) {
+        return builder()
+                .id(location.getId())
+                .locationName(location.getName())
+                .locationType(location.getType().getType())
+                .province(location.getProvince())
+                .city(location.getCity())
+                .locationAddress(location.getAddress())
+                .updateTime(DateUtil.format(location.getUpdateTime(), "yyyy-MM-dd HH:mm"))
+                .build();
+    }
 }

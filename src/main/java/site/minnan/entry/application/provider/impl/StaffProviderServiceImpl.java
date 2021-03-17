@@ -11,8 +11,12 @@ import site.minnan.entry.domain.aggregate.Location;
 import site.minnan.entry.domain.aggregate.Staff;
 import site.minnan.entry.domain.mapper.StaffMapper;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 /**
- *
  * @author Minnan on 2021/3/17
  */
 @Service
@@ -49,5 +53,19 @@ public class StaffProviderServiceImpl implements StaffProviderService {
         Location location = locationProviderService.getLocationById(locationId);
         Staff staff = new Staff(user, location);
         staffMapper.insert(staff);
+    }
+
+    /**
+     * 获取工作人员的工作地点
+     *
+     * @param userIds 用户id
+     * @return key：用户id，用户工作地点
+     */
+    @Override
+    public Map<Integer, String> getStaffLocationMap(Collection<Integer> userIds) {
+        QueryWrapper<Staff> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("user_id", userIds);
+        List<Staff> staffList = staffMapper.selectList(queryWrapper);
+        return staffList.stream().collect(Collectors.toMap(Staff::getUserId, Staff::getLocationName));
     }
 }

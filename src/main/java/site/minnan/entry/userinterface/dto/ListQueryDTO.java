@@ -22,4 +22,9 @@ public class ListQueryDTO {
     @ApiModelProperty(value = "每页显示数量", required = true, example = "10")
     @NotNull(message = "显示数量不能为空")
     private Integer pageSize;
+
+    @ApiModelProperty(hidden = true)
+    public Integer getStart() {
+        return (pageIndex - 1) * pageSize;
+    }
 }

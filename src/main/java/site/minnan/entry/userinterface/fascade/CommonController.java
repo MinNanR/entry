@@ -58,15 +58,5 @@ public class CommonController {
         return ResponseEntity.success(dropDownBoxList);
     }
 
-    @ApiOperation("酒店下拉框")
-    @PostMapping("getHotelDropDown")
-    public ResponseEntity<List<DropDownBox>> getHotelDropDown() {
-        return ResponseEntity.success(null);
-    }
 
-    @ApiOperation("口岸下拉框")
-    @PostMapping("getPortDropDown")
-    public ResponseEntity<List<DropDownBox>> getPortDropDown() {
-        return ResponseEntity.success(null);
-    }
 }

@@ -21,3 +21,58 @@ Authorization: {{admin_token}}
   "locationType": "PORT",
   "province": "广东"
 }
+
+###
+POST {{baseUrl}}/location/getLocationList
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "pageIndex": 1,
+  "pageSize": 10
+}
+
+###
+POST {{baseUrl}}/location/getLocationDropDown
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "role": "PORT_USER",
+  "province": "广东"
+}
+
+###
+POST {{baseUrl}}/location/updateLocation
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "address": "香洲区101号",
+  "city": "珠海",
+  "id": 3,
+  "locationName": "荔湾酒店",
+  "province": "广东"
+}
+
+###
+POST {{baseUrl}}/user/addUser
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "locationId": 4,
+  "realName": "张三",
+  "role": "PORT_USER",
+  "username": "13813712345"
+}
+
+###
+POST {{baseUrl}}/user/getUserList
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "pageIndex": 1,
+  "pageSize": 10
+}
