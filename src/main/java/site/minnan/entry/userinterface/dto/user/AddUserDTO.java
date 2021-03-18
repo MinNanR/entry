@@ -27,8 +27,4 @@ public class AddUserDTO {
             "ADMIN")
     @NotEmpty(message = "未指定创建用户的角色")
     private String role;
-
-    @ApiModelProperty(value = "位置id", example = "1")
-    private Integer locationId;
-
 }

@@ -77,7 +77,6 @@ public class AuthServiceImpl implements AuthService {
         vo.setRealName(jwtUser.getRealName());
         if (!Role.ADMIN.getValue().equals(role)) {
             Staff staff = staffProviderService.getStaffByUser(jwtUser.getId());
-            vo.setLocationName(staff.getLocationName());
         }
         return vo;
     }

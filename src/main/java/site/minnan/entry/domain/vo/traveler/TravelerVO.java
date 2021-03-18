@@ -1,12 +1,21 @@
 package site.minnan.entry.domain.vo.traveler;
 
+import cn.hutool.core.date.DateUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
+import site.minnan.entry.domain.aggregate.Traveler;
+
+import java.util.Optional;
 
 @ApiModel("旅客列表查询数据")
+@Builder
 @Data
 public class TravelerVO {
+
+    @ApiModelProperty(value = "旅客id",example = "1")
+    private Integer id;
 
     @ApiModelProperty(value = "旅客姓名", example = "王帅")
     private String name;
@@ -24,7 +33,10 @@ public class TravelerVO {
     private String nationality;
 
     @ApiModelProperty(value = "入境时间（格式：yyyy-MM-dd HH:mm）", example = "2021-03-16 16:00")
-    private String createTime;
+    private String entryTime;
+
+    @ApiModelProperty(value = "入境口岸名称",example = "横琴口岸")
+    private String portName;
 
     @ApiModelProperty(value = "登车时间（格式：yyyy-MM-dd HH:mm）", example = "2021-03-16 17:00")
     private String boardingTime;
@@ -42,4 +54,20 @@ public class TravelerVO {
             "ARRIVE-已抵达酒店,QUARANTINE-隔离中,RELEASED-已解除隔离")
     private String statusCode;
 
+    public static TravelerVO assemble(Traveler traveler){
+        TravelerVOBuilder builder = builder()
+                .id(traveler.getId())
+                .name(traveler.getName())
+                .gender(traveler.getGender().getGender())
+                .age(traveler.getAge())
+                .cardNumber(traveler.getCardNumber())
+                .nationality(traveler.getNationality())
+                .entryTime(DateUtil.format(traveler.getEntryTime(), "yyyy-MM-dd HH:mm"))
+                .portName(traveler.getPortName())
+                .status(traveler.getStatus().getStatus())
+                .statusCode(traveler.getStatus().getValue());
+        Optional.ofNullable(traveler.getBoardingTime()).ifPresent(s -> builder.boardingTime(DateUtil.format(s, "yyyy-MM-dd HH:mm")));
+        Optional.ofNullable(traveler.getArrivalTime()).ifPresent(s -> builder.hotelName(traveler.getHotelName()));
+        return builder.build();
+    }
 }

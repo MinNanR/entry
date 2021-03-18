@@ -1,5 +1,6 @@
 package site.minnan.entry.application.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -79,6 +80,8 @@ public class LocationServiceImpl implements LocationService {
             throw new EntityNotExistException("位置不存在");
         }
         location.update(dto);
+        JwtUser jwtUser = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        location.setUpdateUser(jwtUser);
         locationMapper.updateById(location);
     }
 
@@ -91,24 +94,7 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public List<DropDownBox> getDropDownBox(GetLocationDropDownDTO dto) {
         QueryWrapper<Location> queryWrapper = new QueryWrapper<>();
-        if (dto.getType() != null) {
-            queryWrapper.eq("type", dto.getType());
-        } else {
-            String roleString = dto.getRole();
-            if (roleString != null) {
-                Role role = Role.valueOf(roleString.toUpperCase());
-                switch (role) {
-                    case HOTEL_USER: {
-                        queryWrapper.eq("type", LocationType.HOTEL);
-                        break;
-                    }
-                    case PORT_USER: {
-                        queryWrapper.eq("type", LocationType.PORT);
-                        break;
-                    }
-                }
-            }
-        }
+        Optional.ofNullable(dto.getType()).ifPresent(s -> queryWrapper.eq("type", s));
         Optional.ofNullable(dto.getProvince()).ifPresent(s -> queryWrapper.eq("province", s));
         Optional.ofNullable(dto.getCity()).ifPresent(s -> queryWrapper.eq("city", s));
         List<Location> list = locationMapper.selectList(queryWrapper);

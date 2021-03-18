@@ -24,15 +24,6 @@ public interface StaffProviderService {
      * 添加工作人员
      *
      * @param user       用户
-     * @param locationId 工作地点id
      */
-    void addStaff(AuthUser user, Integer locationId);
-
-    /**
-     * 获取工作人员的工作地点
-     *
-     * @param userIds 用户id
-     * @return key：用户id，用户工作地点
-     */
-    Map<Integer, String> getStaffLocationMap(Collection<Integer> userIds);
+    void addStaff(AuthUser user);
 }

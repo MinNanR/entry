@@ -40,16 +40,6 @@ public class Staff extends ModifiableEntity {
     private String staffName;
 
     /**
-     * 工作地点id
-     */
-    private Integer locationId;
-
-    /**
-     * 工作地点名称
-     */
-    private String locationName;
-
-    /**
      * 工作地点类型
      */
     private LocationType locationType;
@@ -75,11 +65,9 @@ public class Staff extends ModifiableEntity {
         super.setUpdateUser(jwtUser.getId(), jwtUser.getRealName());
     }
 
-    public Staff(AuthUser user, Location location) {
+    public Staff(AuthUser user) {
         this.userId = user.getId();
         this.staffName = user.getRealName();
-        this.locationId = location.getId();
-        this.locationName = location.getName();
-        this.locationType = location.getType();
+        this.locationType = user.getRole().getLocationType();
     }
 }

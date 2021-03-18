@@ -35,6 +35,7 @@ public class UserController {
         return ResponseEntity.success();
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ApiOperation("查询用户")
     @PostMapping("getUserList")
     public ResponseEntity<ListQueryVO<UserVO>> getUserVO(@RequestBody @Valid GetUserListDTO dto) {
@@ -42,35 +43,44 @@ public class UserController {
         return ResponseEntity.success(vo);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ApiOperation("修改指定用户的密码")
     @PostMapping("updatePassword")
     public ResponseEntity<?> updatePassword(@RequestBody @Valid UpdatePasswordDTO dto) {
+        userService.updatePassword(dto);
         return ResponseEntity.success();
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ApiOperation("修改当前用户的信息（密码和真实姓名)")
     @PostMapping("updateUserInfo")
     public ResponseEntity<?> updateUserInfo(@RequestBody @Valid UpdateUserDTO dto) {
+        userService.updateUserInfo(dto);
         return ResponseEntity.success();
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','HOTEL_USER','PORT_USER')")
     @ApiOperation("获取当前用户信息")
     @PostMapping("getUserInfo")
     public ResponseEntity<UserInfoVO> getUserInfo() {
         return ResponseEntity.success(null);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ApiOperation("禁用用户")
     @PostMapping("disableUser/{id}")
     public ResponseEntity<?> disableUser(@ApiParam(value = "用户id", required = true, example = "1")
                                          @RequestBody @PathVariable("id") @NotNull(message = "未指定禁用的用户") Integer id) {
+        userService.disableUser(id);
         return ResponseEntity.success();
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ApiOperation("启用用户")
     @PostMapping("enableUser/{id}")
     public ResponseEntity<?> enableUser(@ApiParam(value = "用户id", required = true, example = "1")
                                         @Valid @PathVariable("id") @NotNull(message = "未指定启用的用户") Integer id) {
+        userService.enableUser(id);
         return ResponseEntity.success();
     }
 }

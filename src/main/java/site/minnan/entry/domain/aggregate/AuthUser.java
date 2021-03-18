@@ -3,16 +3,13 @@ package site.minnan.entry.domain.aggregate;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import site.minnan.entry.domain.entity.JwtUser;
 import site.minnan.entry.domain.entity.ModifiableEntity;
 import site.minnan.entry.infrastructure.enumerate.Role;
 
 @TableName("auth_user")
-@Data
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,6 +29,7 @@ public class AuthUser extends ModifiableEntity {
     /**
      * 昵称
      */
+    @Setter
     private String realName;
 
     /**
@@ -70,5 +68,28 @@ public class AuthUser extends ModifiableEntity {
 
     public void setUpdateUser(JwtUser user) {
         setUpdateUser(user.getId(), user.getRealName());
+    }
+
+    /**
+     * 修改密码
+     *
+     * @param encodedPassword 加密后的密码
+     * @param passwordStamp   新密码戳
+     */
+    public void updatePassword(String encodedPassword, String passwordStamp) {
+        this.password = encodedPassword;
+        this.passwordStamp = passwordStamp;
+    }
+
+    public void disable() {
+        this.enabled = DISABLE;
+    }
+
+    public void enable() {
+        this.enabled = ENABLE;
+    }
+
+    public AuthUser(Integer id){
+        this.id = id;
     }
 }

@@ -23,9 +23,6 @@ public class LoginVO {
     @ApiModelProperty("真实姓名")
     private String realName;
 
-    @ApiModelProperty("工作地点名称")
-    private String locationName;
-
     public LoginVO(String authority, String role){
         this.authority = authority;
         this.role = role;

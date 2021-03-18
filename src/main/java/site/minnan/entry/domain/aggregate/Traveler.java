@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.minnan.entry.domain.entity.JwtUser;
@@ -24,6 +25,7 @@ import java.util.Date;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @TableName("entry_traveler")
 public class Traveler extends ModifiableEntity {
 
@@ -67,6 +69,16 @@ public class Traveler extends ModifiableEntity {
      * 联系电话
      */
     private String phoneNumber;
+
+    /**
+     * 入境口岸id
+     */
+    private Integer portId;
+
+    /**
+     * 入境口岸名称
+     */
+    private String portName;
 
     /**
      * 入境时间

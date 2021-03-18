@@ -94,7 +94,7 @@ public class ControllerExceptionHandler {
     /**
      * 处理无权限访问接口异常
      *
-     * @param ex 异常
+     * @param ex     异常
      * @param method
      * @return
      */
@@ -108,9 +108,16 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(UnmodifiableException.class)
     @ResponseBody
-    public ResponseEntity<?> handleUnmodifiableException(UnmodifiableException ex){
+    public ResponseEntity<?> handleUnmodifiableException(UnmodifiableException ex) {
         log.error("实体不可修改", ex);
         return ResponseEntity.fail(ResponseCode.FAIL, ex.getMessage());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseBody
+    public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException ex) {
+        log.error("参数错误", ex);
+        return ResponseEntity.fail(ResponseCode.INVALID_PARAM, "参数填写错误，请检查");
     }
 
     @ExceptionHandler(Exception.class)

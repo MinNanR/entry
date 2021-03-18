@@ -1,7 +1,6 @@
 package site.minnan.entry.userinterface.fascade;
 
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,7 +12,6 @@ import site.minnan.entry.application.service.LocationService;
 import site.minnan.entry.domain.vo.DropDownBox;
 import site.minnan.entry.domain.vo.ListQueryVO;
 import site.minnan.entry.domain.vo.location.LocationVO;
-import site.minnan.entry.infrastructure.enumerate.LocationType;
 import site.minnan.entry.userinterface.dto.location.AddLocationDTO;
 import site.minnan.entry.userinterface.dto.location.GetLocationDropDownDTO;
 import site.minnan.entry.userinterface.dto.location.GetLocationListDTO;
@@ -57,7 +55,7 @@ public class LocationController {
 
     @ApiOperation("位置下拉框")
     @PostMapping("getLocationDropDown")
-    public ResponseEntity<List<DropDownBox>> getLocationDropDown(@RequestBody GetLocationDropDownDTO dto){
+    public ResponseEntity<List<DropDownBox>> getLocationDropDown(@RequestBody GetLocationDropDownDTO dto) {
         List<DropDownBox> dropDownBox = locationService.getDropDownBox(dto);
         return ResponseEntity.success(dropDownBox);
     }

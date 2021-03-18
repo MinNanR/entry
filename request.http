@@ -3,11 +3,33 @@ Content-Type: application/json
 
 {
   "username": "min",
-  "password": "e10adc3949ba59abbe56e057f20f883e"
+  "password": "c663b11dff4be0badcf652212a2c1102"
 }
 
 
 > {% client.global.set("admin_token", response.body.data.authority); %}
+
+###
+POST {{baseUrl}}/auth/login/password
+Content-Type: application/json
+
+{
+  "username": "LisiHotel",
+  "password": "e10adc3949ba59abbe56e057f20f883e"
+}
+
+> {% client.global.set("hotel_token", response.body.data.authority); %}
+
+###
+POST {{baseUrl}}/auth/login/password
+Content-Type: application/json
+
+{
+  "username": "13813712345",
+  "password": "e10adc3949ba59abbe56e057f20f883e"
+}
+
+> {% client.global.set("port_token", response.body.data.authority); %}
 
 ###
 POST {{baseUrl}}/location/addLocation
@@ -15,9 +37,9 @@ Content-Type: application/json
 Authorization: {{admin_token}}
 
 {
-  "address": "香洲区环岛东路",
-  "city": "珠海",
-  "locationName": "横琴口岸",
+  "address": "",
+  "city": "深圳",
+  "locationName": "福田口岸",
   "locationType": "PORT",
   "province": "广东"
 }
@@ -38,8 +60,7 @@ Content-Type: application/json
 Authorization: {{admin_token}}
 
 {
-  "role": "PORT_USER",
-  "province": "广东"
+  "type": "PORT"
 }
 
 ###
@@ -61,10 +82,9 @@ Content-Type: application/json
 Authorization: {{admin_token}}
 
 {
-  "locationId": 4,
-  "realName": "张三",
+  "realName": "王帅",
   "role": "PORT_USER",
-  "username": "13813712345"
+  "username": "wangshuai"
 }
 
 ###
@@ -76,3 +96,61 @@ Authorization: {{admin_token}}
   "pageIndex": 1,
   "pageSize": 10
 }
+
+###
+POST {{baseUrl}}/user/updatePassword
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "id": 6,
+  "newPassword": "e10adc3949ba59abbe56e057f20f883e"
+}
+
+###
+POST {{baseUrl}}/user/updateUserInfo
+Content-Type: application/json
+Authorization: {{hotel_token}}
+
+{
+  "newPassword": "e10adc3949ba59abbe56e057f20f883e"
+}
+
+###
+POST {{baseUrl}}/user/disableUser/6
+Authorization: {{admin_token}}
+
+###
+POST {{baseUrl}}/user/enableUser/6
+Authorization: {{admin_token}}
+
+###
+POST {{baseUrl}}/traveler/addTraveler
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "birthday": "1997-04-13",
+  "cardNumber": "441933199704132400",
+  "gender": "FEMALE",
+  "name": "李翠花",
+  "nationality": "中国",
+  "portId": 4,
+  "portName": "横琴口岸"
+}
+
+###
+POST {{baseUrl}}/traveler/getTravelerList
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "endTime": "2021-03-18 18:00",
+  "pageIndex": 1,
+  "pageSize": 10,
+  "startTime": "2021-03-18 15:00"
+}
+
+###
+POST http://localhost:8130/entry/traveler/deleteTraveler/1123
+Authorization: {{admin_token}}

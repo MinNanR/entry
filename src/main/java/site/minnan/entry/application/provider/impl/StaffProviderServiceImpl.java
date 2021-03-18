@@ -3,13 +3,17 @@ package site.minnan.entry.application.provider.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import site.minnan.entry.application.provider.LocationProviderService;
 import site.minnan.entry.application.provider.StaffProviderService;
 import site.minnan.entry.domain.aggregate.AuthUser;
 import site.minnan.entry.domain.aggregate.Location;
 import site.minnan.entry.domain.aggregate.Staff;
+import site.minnan.entry.domain.entity.JwtUser;
 import site.minnan.entry.domain.mapper.StaffMapper;
+import site.minnan.entry.infrastructure.enumerate.LocationType;
 
 import java.util.Collection;
 import java.util.List;
@@ -46,26 +50,12 @@ public class StaffProviderServiceImpl implements StaffProviderService {
      * 添加工作人员
      *
      * @param user       用户
-     * @param locationId 工作地点id
      */
-    @Override
-    public void addStaff(AuthUser user, Integer locationId) {
-        Location location = locationProviderService.getLocationById(locationId);
-        Staff staff = new Staff(user, location);
+    @Transactional
+    public void addStaff(AuthUser user) {
+        Staff staff = new Staff(user);
+        JwtUser jwtUser = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        staff.setCreateUser(jwtUser);
         staffMapper.insert(staff);
-    }
-
-    /**
-     * 获取工作人员的工作地点
-     *
-     * @param userIds 用户id
-     * @return key：用户id，用户工作地点
-     */
-    @Override
-    public Map<Integer, String> getStaffLocationMap(Collection<Integer> userIds) {
-        QueryWrapper<Staff> queryWrapper = new QueryWrapper<>();
-        queryWrapper.in("user_id", userIds);
-        List<Staff> staffList = staffMapper.selectList(queryWrapper);
-        return staffList.stream().collect(Collectors.toMap(Staff::getUserId, Staff::getLocationName));
     }
 }
