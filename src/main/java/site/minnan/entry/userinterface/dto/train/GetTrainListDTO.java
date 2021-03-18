@@ -16,9 +16,9 @@ public class GetTrainListDTO extends ListQueryDTO {
     @ApiModelProperty(value = "车牌号码",example = "4433Z")
     private String carNumber;
 
-    @ApiModelProperty(value = "开始时间（格式：yyyy-MM-dd）",example = "2021-03-16")
-    private String startTime;
-
-    @ApiModelProperty(value = "结束时间（格式：yyyy-MM-dd）",example = "2021-03-17")
-    private String endTime;
+//    @ApiModelProperty(value = "开始时间（格式：yyyy-MM-dd）",example = "2021-03-16")
+//    private String startTime;
+//
+//    @ApiModelProperty(value = "结束时间（格式：yyyy-MM-dd）",example = "2021-03-17")
+//    private String endTime;
 }

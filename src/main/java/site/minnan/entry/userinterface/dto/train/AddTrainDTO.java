@@ -31,10 +31,21 @@ public class AddTrainDTO {
     @NotEmpty(message = "跟车人电话号码不能为空")
     private String followerPhone;
 
-    @ApiModelProperty(value = "目的地酒店id", required = true, example = "2")
-    @NotNull
-    private Integer destinationHotelId;
+    @ApiModelProperty(value = "出发点口岸id", required = true, example = "5")
+    @NotNull(message = "未填写出发口岸")
+    private Integer portId;
 
-    @ApiModelProperty(value = "出发点口岸id（管理员添加时必传）")
-    private Integer departPortId;
+    @ApiModelProperty(value = "出发点口岸名称", required = true, example = "横琴口岸")
+    @NotEmpty(message = "未填写出发口岸")
+    private String portName;
+
+    @ApiModelProperty(value = "目的地酒店id", required = true, example = "2")
+    @NotNull(message = "未填写地酒店")
+    private Integer hotelId;
+
+    @ApiModelProperty(value = "目的地酒店名称", required = true, example = "荔湾酒店")
+    @NotEmpty(message = "未填写地酒店")
+    private String hotelName;
+
+
 }

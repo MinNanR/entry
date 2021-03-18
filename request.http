@@ -60,7 +60,7 @@ Content-Type: application/json
 Authorization: {{admin_token}}
 
 {
-  "type": "PORT"
+  "type": "HOTEL"
 }
 
 ###
@@ -131,9 +131,9 @@ Authorization: {{admin_token}}
 
 {
   "birthday": "1997-04-13",
-  "cardNumber": "441933199704132400",
-  "gender": "FEMALE",
-  "name": "李翠花",
+  "cardNumber": "441900199704132423",
+  "gender": "MALE",
+  "name": "李四",
   "nationality": "中国",
   "portId": 4,
   "portName": "横琴口岸"
@@ -152,5 +152,37 @@ Authorization: {{admin_token}}
 }
 
 ###
-POST http://localhost:8130/entry/traveler/deleteTraveler/1123
+POST {{baseUrl}}/traveler/deleteTraveler/1123
 Authorization: {{admin_token}}
+
+###
+POST {{baseUrl}}/traveler/getPersonalArchive/2
+Authorization: {{admin_token}}
+
+###
+POST {{baseUrl}}/trainRecord/addTrain
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "carNumber": "粤S3388Q",
+  "driverName": "杨过",
+  "driverPhone": "13817344567",
+  "followerName": "郭襄",
+  "followerPhone": "13817344460",
+  "hotelId": 2,
+  "hotelName": "荔湾酒店",
+  "portId": 3,
+  "portName": "横琴口岸"
+}
+
+###
+POST {{baseUrl}}/trainRecord/getTrainList/port
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "carNumber": "3888",
+  "pageIndex": 1,
+  "pageSize": 10
+}

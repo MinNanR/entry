@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 import site.minnan.entry.domain.aggregate.Traveler;
 
+import java.util.Map;
+
 @Mapper
 @Repository
 public interface TravelerMapper extends BaseMapper<Traveler> {

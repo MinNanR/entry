@@ -92,6 +92,7 @@ public class UserServiceImpl implements UserService {
         QueryWrapper<AuthUser> queryWrapper = new QueryWrapper<>();
         Optional.ofNullable(dto.getUsername()).ifPresent(s -> queryWrapper.like("username", s));
         Optional.ofNullable(dto.getRole()).ifPresent(s -> queryWrapper.eq("role", s));
+        queryWrapper.orderByDesc("update_time");
         Page<AuthUser> queryPage = new Page<>(dto.getPageIndex(), dto.getPageSize());
         IPage<AuthUser> page = authUserMapper.selectPage(queryPage, queryWrapper);
         List<UserVO> list = page.getRecords().stream()

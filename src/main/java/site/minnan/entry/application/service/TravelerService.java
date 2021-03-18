@@ -1,6 +1,7 @@
 package site.minnan.entry.application.service;
 
 import site.minnan.entry.domain.vo.ListQueryVO;
+import site.minnan.entry.domain.vo.traveler.TravelerArchive;
 import site.minnan.entry.domain.vo.traveler.TravelerVO;
 import site.minnan.entry.userinterface.dto.traveler.AddTravelerDTO;
 import site.minnan.entry.userinterface.dto.traveler.GetTravelerListDTO;
@@ -31,4 +32,12 @@ public interface TravelerService {
      * @param travelerId 旅客id
      */
     void deleteTraveler(Integer travelerId);
+
+    /**
+     * 获取旅客档案
+     *
+     * @param travelerId
+     * @return
+     */
+    TravelerArchive getTravelerArchive(Integer travelerId);
 }

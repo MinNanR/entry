@@ -17,6 +17,7 @@ import site.minnan.entry.domain.aggregate.Traveler;
 import site.minnan.entry.domain.entity.JwtUser;
 import site.minnan.entry.domain.mapper.TravelerMapper;
 import site.minnan.entry.domain.vo.ListQueryVO;
+import site.minnan.entry.domain.vo.traveler.TravelerArchive;
 import site.minnan.entry.domain.vo.traveler.TravelerVO;
 import site.minnan.entry.infrastructure.enumerate.Gender;
 import site.minnan.entry.infrastructure.enumerate.TrainStatus;
@@ -61,6 +62,12 @@ public class TravelerServiceImpl implements TravelerService {
         travelerMapper.insert(traveler);
     }
 
+    /**
+     * 人员明细
+     *
+     * @param dto
+     * @return
+     */
     @Override
     public ListQueryVO<TravelerVO> getTravelerList(GetTravelerListDTO dto) {
         QueryWrapper<Traveler> queryWrapper = new QueryWrapper<>();
@@ -90,5 +97,20 @@ public class TravelerServiceImpl implements TravelerService {
             throw new UnmodifiableException("旅客不可删除");
         }
         travelerMapper.deleteById(travelerId);
+    }
+
+    /**
+     * 获取旅客档案
+     *
+     * @param travelerId
+     * @return
+     */
+    @Override
+    public TravelerArchive getTravelerArchive(Integer travelerId) {
+        Traveler traveler = travelerMapper.selectById(travelerId);
+        if (traveler == null) {
+            throw new EntityNotExistException("旅客不存在");
+        }
+        return new TravelerArchive(traveler);
     }
 }

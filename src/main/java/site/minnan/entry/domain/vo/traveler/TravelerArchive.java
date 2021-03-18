@@ -7,7 +7,9 @@ import lombok.Data;
 import site.minnan.entry.domain.aggregate.Traveler;
 import site.minnan.entry.domain.vo.temperture.TemperatureRecordVO;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @ApiModel("旅客个人档案")
 @Data
@@ -34,25 +36,28 @@ public class TravelerArchive {
     @ApiModelProperty(value = "生日(yyy-MM-dd)", example = "1997-03-04")
     private String birthday;
 
-    @ApiModelProperty(value = "入境口岸",example = "横琴口岸")
+    @ApiModelProperty(value = "入境口岸", example = "横琴口岸")
     private String portName;
 
-    @ApiModelProperty(value = "集中隔离酒店",example = "荔湾酒店")
+    @ApiModelProperty(value = "集中隔离酒店", example = "荔湾酒店")
     private String hotelName;
 
     @ApiModelProperty(value = "入境时间(yyyy-MM-dd HH:mm)", example = "2021-03-18 15:00")
     private String entryTime;
 
-    @ApiModelProperty(value = "开始隔离时间(yyyy-MM-dd)",example = "2021-03-18")
+    @ApiModelProperty(value = "登车时间(yyyy-MM-dd HH:mm)", example = "2021-03-16:00")
+    private String boardingTime;
+
+    @ApiModelProperty(value = "开始隔离时间(yyyy-MM-dd)", example = "2021-03-18")
     private String quarantineStartTime;
 
-    @ApiModelProperty(value = "结束隔离时间(yyyy-MM-dd)",example = "2021-04-01")
+    @ApiModelProperty(value = "结束隔离时间(yyyy-MM-dd)", example = "2021-04-01")
     private String quarantineEndTime;
 
     @ApiModelProperty(value = "体温测量记录")
     List<TemperatureRecordVO> temperatureRecordList;
 
-    public TravelerArchive(Traveler traveler){
+    public TravelerArchive(Traveler traveler) {
         this.id = traveler.getId();
         this.name = traveler.getName();
         this.gender = traveler.getGender().getGender();
@@ -61,6 +66,11 @@ public class TravelerArchive {
         this.cardNumber = traveler.getCardNumber();
         this.birthday = DateUtil.formatDate(traveler.getBirthday());
         this.entryTime = DateUtil.format(traveler.getEntryTime(), "yyyy-MM-dd HH:mm");
+        this.portName = traveler.getPortName();
+        Optional.ofNullable(traveler.getBoardingTime()).ifPresent(s -> this.boardingTime = DateUtil.format(s, "yyyy-MM-dd HH:mm"));
+        Optional.ofNullable(traveler.getQuarantineStartTime()).ifPresent(s -> this.quarantineStartTime = DateUtil.format(s, "yyyy-MM-dd HH:mm"));
+        Optional.ofNullable(traveler.getQuarantineEndTime()).ifPresent(s -> this.quarantineEndTime = DateUtil.format(s, "yyyy-MM-dd HH:mm"));
+        temperatureRecordList = new ArrayList<>();
     }
 
 

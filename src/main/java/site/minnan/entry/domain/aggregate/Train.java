@@ -4,10 +4,14 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.minnan.entry.domain.entity.JwtUser;
 import site.minnan.entry.domain.entity.ModifiableEntity;
+import site.minnan.entry.infrastructure.enumerate.TrainStatus;
+import site.minnan.entry.userinterface.dto.train.AddTrainDTO;
+import site.minnan.entry.userinterface.dto.traveler.AddTravelerDTO;
 
 import java.sql.Timestamp;
 
@@ -19,7 +23,8 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@TableName("entry_train_record")
+@Builder
+@TableName("entry_train")
 public class Train extends ModifiableEntity {
 
     /**
@@ -54,6 +59,16 @@ public class Train extends ModifiableEntity {
     private String followerPhone;
 
     /**
+     * 出发口岸id
+     */
+    private Integer portId;
+
+    /**
+     * 出发口岸名称
+     */
+    private String portName;
+
+    /**
      * 送往的酒店id
      */
     private Integer hotelId;
@@ -72,6 +87,11 @@ public class Train extends ModifiableEntity {
      * 抵达时间
      */
     private Timestamp arriveTime;
+
+    /**
+     * 车次状态
+     */
+    private TrainStatus status;
 
     /**
      * 设置创建者

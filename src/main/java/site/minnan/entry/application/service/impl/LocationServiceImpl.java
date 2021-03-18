@@ -62,6 +62,7 @@ public class LocationServiceImpl implements LocationService {
         QueryWrapper<Location> queryWrapper = new QueryWrapper<>();
         Optional.ofNullable(dto.getLocationName()).ifPresent(s -> queryWrapper.eq("name", s));
         Optional.ofNullable(dto.getLocationType()).ifPresent(s -> queryWrapper.eq("type", s));
+        queryWrapper.orderByDesc("update_time");
         Page<Location> queryPage = new Page<>(dto.getPageIndex(), dto.getPageSize());
         IPage<Location> page = locationMapper.selectPage(queryPage, queryWrapper);
         List<LocationVO> list = page.getRecords().stream().map(LocationVO::assemble).collect(Collectors.toList());
