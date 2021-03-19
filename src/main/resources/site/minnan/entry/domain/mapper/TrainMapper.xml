@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.minnan.entry.domain.mapper.TrainMapper">
+
+    <!--获取车次数据-->
+    <select id="getTrainList" resultType="site.minnan.entry.domain.entity.TrainData">
+        select t1.id id, t1.car_number carNumber, t1.driver_name driverName, t1.driver_phone driverPhone,
+        t1.follower_name followerName, t1.follower_phone followerPhone,t1.port_id portId, t1.port_name portName,
+        t1.hotel_id otelId, t1.hotel_name hotelName, t1.departure_time departureTime, t1.arrive_time arriveTime,
+        t1.status status, ifnull(t3.count, 0) travelerCount
+        from entry_train t1
+        left join (select count(1) count, t2.train_id train_id from entry_traveler t2 group by t2.train_id) t3
+        on t3.train_id = t1.id
+        where 1 = 1
+        <if test="carNumber != null and carNumber != ''">
+            and car_number like concat('%', #{carNumber}, '%')
+        </if>
+        order by t1.update_time desc
+        limit #{start},#{pageSize}
+    </select>
+</mapper>

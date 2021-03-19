@@ -28,7 +28,7 @@ logging:
     name: ./logs/entry.log
 
 mybatis-plus:
-  mapper-locations: /site/minnan/recordlife/domain/mapper/*.xml
+  mapper-locations: /site/minnan/entry/domain/mapper/*.xml
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true

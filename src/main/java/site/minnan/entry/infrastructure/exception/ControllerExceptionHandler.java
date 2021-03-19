@@ -15,6 +15,7 @@ import org.springframework.web.method.HandlerMethod;
 import site.minnan.entry.userinterface.response.ResponseCode;
 import site.minnan.entry.userinterface.response.ResponseEntity;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -125,5 +126,11 @@ public class ControllerExceptionHandler {
     public ResponseEntity<?> handleUnknownException(Exception ex) {
         log.error("unknown error", ex);
         return ResponseEntity.fail(ResponseCode.UNKNOWN_ERROR);
+    }
+
+    public static void main(String[] args) {
+        BigDecimal z =BigDecimal.ZERO;
+        BigDecimal plus = z.plus();
+        System.out.println(plus);
     }
 }

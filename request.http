@@ -182,7 +182,6 @@ Content-Type: application/json
 Authorization: {{admin_token}}
 
 {
-  "carNumber": "3888",
   "pageIndex": 1,
   "pageSize": 10
 }
