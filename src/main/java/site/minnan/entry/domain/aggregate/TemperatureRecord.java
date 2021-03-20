@@ -95,4 +95,12 @@ public class TemperatureRecord extends ModifiableEntity {
     public void setUpdateUser(JwtUser jwtUser) {
         super.setUpdateUser(jwtUser.getId(), jwtUser.getRealName());
     }
+
+    public TemperatureRecord(Traveler traveler){
+        this.travelerId = traveler.getId();
+        this.travelerName = traveler.getName();
+        this.hotelId = traveler.getHotelId();
+        this.hotelName = traveler.getHotelName();
+        this.status = TemperatureRecordStatus.UNRECORDED;
+    }
 }

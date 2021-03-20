@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.minnan.entry.domain.mapper.TravelerMapper">
+
+    <!--旅客抵达-->
+    <update id="travelerArrive">
+        <foreach collection="travelers" item="item" separator=";">
+            update entry_traveler set status = 'NOT_QUARANTINE', hotel_id = #{item.hotelId},
+            hotel_name = #{item.hotelName}, arrival_time = #{item.arrivalTime},update_user_id = #{item.updateUserId},
+            update_user_name = #{item.updateUserName}, update_time = #{item.updateTime}
+            where id = #{item.id}
+        </foreach>
+    </update>
+</mapper>

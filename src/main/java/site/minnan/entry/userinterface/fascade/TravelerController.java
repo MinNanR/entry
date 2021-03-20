@@ -12,9 +12,8 @@ import site.minnan.entry.domain.vo.traveler.HotelData;
 import site.minnan.entry.domain.vo.traveler.NationalityStatistics;
 import site.minnan.entry.domain.vo.traveler.TravelerArchive;
 import site.minnan.entry.domain.vo.traveler.TravelerVO;
-import site.minnan.entry.userinterface.dto.traveler.AddTravelerDTO;
-import site.minnan.entry.userinterface.dto.traveler.GetTravelerListDTO;
-import site.minnan.entry.userinterface.dto.traveler.StartQuarantineDTO;
+import site.minnan.entry.userinterface.dto.ListQueryDTO;
+import site.minnan.entry.userinterface.dto.traveler.*;
 import site.minnan.entry.userinterface.response.ResponseEntity;
 
 import javax.validation.Valid;
@@ -43,6 +42,14 @@ public class TravelerController {
         return ResponseEntity.success(vo);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','PORT_USER')")
+    @ApiOperation("获取未登车的旅客")
+    @PostMapping("getNotBoardedTravelerList")
+    public ResponseEntity<ListQueryVO<TravelerVO>> getNotBoardedTravelerList(@RequestBody @Valid GetNotBoardedTravelerListDTO dto) {
+        ListQueryVO<TravelerVO> vo = travelerService.getNotBoardedTraverList(dto);
+        return ResponseEntity.success(vo);
+    }
+
     @ApiOperation("删除旅客")
     @PostMapping("deleteTraveler/{id}")
     public ResponseEntity<?> deleteTraveler(@ApiParam(value = "旅客id", required = true, example = "1") @Valid @PathVariable("id")
@@ -51,23 +58,35 @@ public class TravelerController {
         return ResponseEntity.success();
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','PORT_USER','HOTEL_USER')")
     @ApiOperation("查询指定车次上的乘客")
-    @PostMapping("getTravelerListByTrain/{id}")
-    public ResponseEntity<ListQueryVO<TravelerVO>> getTravelerListByTrain(
-            @ApiParam(value = "车次id", required = true, example = "1") @Valid @PathVariable("id") @NotNull(message =
-                    "未指定查询的车次") Integer trainId) {
-        return ResponseEntity.success(null);
+    @PostMapping("getTravelerListByTrain")
+    public ResponseEntity<ListQueryVO<TravelerVO>> getTravelerListByTrain(@RequestBody @Valid GetTravelerListByTrainDTO dto) {
+        ListQueryVO<TravelerVO> vo = travelerService.getTravelerListByTrain(dto);
+        return ResponseEntity.success(vo);
     }
 
-    @ApiOperation("查询指定酒店的在店旅客")
-    @PostMapping("getTravelerListByHotel")
-    public ResponseEntity<ListQueryVO<TravelerVO>> getTravelerListByHotel() {
-        return ResponseEntity.success(null);
+    @PreAuthorize("hasAnyAuthority('ADMIN','HOTEL_USER')")
+    @ApiOperation("查询当前在酒店的旅客")
+    @PostMapping("getTravelerList/hotel")
+    public ResponseEntity<ListQueryVO<TravelerVO>> getTravelerListInHotel(@RequestBody @Valid GetTravelerInHotelDTO dto) {
+        ListQueryVO<TravelerVO> vo = travelerService.getTravelerListInHotel(dto);
+        return ResponseEntity.success(vo);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','HOTEL_USER')")
+    @ApiOperation("查询未开始隔离的旅客")
+    @PostMapping("getNotQuarantineTravelerList")
+    public ResponseEntity<ListQueryVO<TravelerVO>> getNotQuarantineTravelerList(@RequestBody @Valid ListQueryDTO dto){
+        ListQueryVO<TravelerVO> vo = travelerService.getNotQuarantineTravelerList(dto);
+        return ResponseEntity.success(vo);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN','HOTEL_USER')")
     @ApiOperation("开始隔离")
     @PostMapping("startQuarantine")
     public ResponseEntity<?> startQuarantine(@RequestBody @Valid StartQuarantineDTO dto) {
+        travelerService.startQuarantine(dto);
         return ResponseEntity.success();
     }
 
@@ -93,7 +112,7 @@ public class TravelerController {
     @ApiOperation("旅客个人档案")
     @PostMapping("getPersonalArchive/{id}")
     public ResponseEntity<TravelerArchive> getPersonalArchive(@ApiParam(value = "旅客id", required = true, example = "1") @Valid @PathVariable("id")
-                                                @NotNull(message = "未指定结束隔离的旅客") Integer travelerId) {
+                                                              @NotNull(message = "未指定结束隔离的旅客") Integer travelerId) {
         TravelerArchive travelerArchive = travelerService.getTravelerArchive(travelerId);
         return ResponseEntity.success(travelerArchive);
     }

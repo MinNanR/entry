@@ -145,10 +145,8 @@ Content-Type: application/json
 Authorization: {{admin_token}}
 
 {
-  "endTime": "2021-03-18 18:00",
   "pageIndex": 1,
-  "pageSize": 10,
-  "startTime": "2021-03-18 15:00"
+  "pageSize": 10
 }
 
 ###
@@ -182,6 +180,129 @@ Content-Type: application/json
 Authorization: {{admin_token}}
 
 {
+  "pageIndex": 1,
+  "pageSize": 10,
+  "portId": 4
+}
+
+###
+POST {{baseUrl}}/traveler/getNotBoardedTravelerList
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "pageIndex": 1,
+  "pageSize": 10,
+  "portId": 4
+}
+
+###
+POST {{baseUrl}}/trainRecord/board
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "trainId": 2,
+  "travelerIds": [
+    2,
+    3
+  ]
+}
+
+###
+POST {{baseUrl}}/trainRecord/deleteTrain/22
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+
+###
+POST {{baseUrl}}/trainRecord/depart/2
+Authorization: {{admin_token}}
+
+###
+POST {{baseUrl}}/trainRecord/getTrainList/arriving
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "pageIndex": 1,
+  "pageSize": 10
+}
+
+###
+POST {{baseUrl}}/trainRecord/acceptTrain
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "trainIds": [
+    2
+  ]
+}
+
+
+###
+POST {{baseUrl}}/traveler/getTravelerListByTrain
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "pageIndex": 1,
+  "pageSize": 10,
+  "trainId": 2
+}
+
+###
+POST {{baseUrl}}/trainRecord/getTrainList/arrived
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "pageIndex": 1,
+  "pageSize": 10
+}
+
+###
+POST {{baseUrl}}/traveler/getTravelerList/hotel
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "hotelId": 2,
+  "pageIndex": 1,
+  "pageSize": 10
+}
+
+###
+POST {{baseUrl}}/traveler/getNotQuarantineTravelerList
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "pageIndex": 1,
+  "pageSize": 10
+}
+
+###
+POST {{baseUrl}}/traveler/startQuarantine
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "startTime": "2021-03-20",
+  "travelerIds": [
+    2,
+    3
+  ]
+}
+
+###
+POST {{baseUrl}}/temperature/getTemperatureRecordList
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "date": "2021-03-19",
   "pageIndex": 1,
   "pageSize": 10
 }

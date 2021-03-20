@@ -21,7 +21,7 @@ import site.minnan.entry.userinterface.response.ResponseEntity;
 import javax.validation.Valid;
 import java.util.List;
 
-@Api(tags = "位置接口")
+@Api(tags = "位置")
 @RestController
 @RequestMapping("/entry/location")
 public class LocationController {

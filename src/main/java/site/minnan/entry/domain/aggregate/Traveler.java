@@ -144,4 +144,10 @@ public class Traveler extends ModifiableEntity {
     public void setUpdateUser(JwtUser jwtUser) {
         super.setUpdateUser(jwtUser.getId(), jwtUser.getRealName());
     }
+
+    public void arrive(Train train){
+        this.hotelId = train.getHotelId();
+        this.hotelName = train.getHotelName();
+        this.arrivalTime = train.getArriveTime();
+    }
 }

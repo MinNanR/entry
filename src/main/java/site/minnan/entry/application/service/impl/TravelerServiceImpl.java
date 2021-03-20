@@ -2,16 +2,17 @@ package site.minnan.entry.application.service.impl;
 
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.lang.Console;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import site.minnan.entry.application.provider.TemperatureProviderService;
 import site.minnan.entry.application.service.TravelerService;
 import site.minnan.entry.domain.aggregate.Traveler;
 import site.minnan.entry.domain.entity.JwtUser;
@@ -20,14 +21,14 @@ import site.minnan.entry.domain.vo.ListQueryVO;
 import site.minnan.entry.domain.vo.traveler.TravelerArchive;
 import site.minnan.entry.domain.vo.traveler.TravelerVO;
 import site.minnan.entry.infrastructure.enumerate.Gender;
-import site.minnan.entry.infrastructure.enumerate.TrainStatus;
 import site.minnan.entry.infrastructure.enumerate.TravelerStatus;
 import site.minnan.entry.infrastructure.exception.EntityNotExistException;
 import site.minnan.entry.infrastructure.exception.UnmodifiableException;
-import site.minnan.entry.userinterface.dto.traveler.AddTravelerDTO;
-import site.minnan.entry.userinterface.dto.traveler.GetTravelerListDTO;
+import site.minnan.entry.userinterface.dto.ListQueryDTO;
+import site.minnan.entry.userinterface.dto.traveler.*;
 
 import java.sql.Timestamp;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,6 +38,9 @@ public class TravelerServiceImpl implements TravelerService {
 
     @Autowired
     private TravelerMapper travelerMapper;
+
+    @Autowired
+    private TemperatureProviderService temperatureProviderService;
 
     /**
      * 添加旅客
@@ -112,5 +116,97 @@ public class TravelerServiceImpl implements TravelerService {
             throw new EntityNotExistException("旅客不存在");
         }
         return new TravelerArchive(traveler);
+    }
+
+    /**
+     * 获取未登车的旅客下拉框
+     *
+     * @param dto
+     * @return
+     */
+    @Override
+    public ListQueryVO<TravelerVO> getNotBoardedTraverList(GetNotBoardedTravelerListDTO dto) {
+        QueryWrapper<Traveler> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id", "name")
+                .eq("port_id", dto.getPortId())
+                .eq("status", TravelerStatus.ENTRY)
+                .orderByDesc("update_time");
+        Optional.ofNullable(dto.getName()).ifPresent(s -> queryWrapper.like("name", s));
+        Page<Traveler> queryPage = new Page<>(dto.getPageIndex(), dto.getPageSize());
+        IPage<Traveler> page = travelerMapper.selectPage(queryPage, queryWrapper);
+        List<TravelerVO> list = page.getRecords().stream().map(TravelerVO::toDropDown).collect(Collectors.toList());
+        return new ListQueryVO<>(list, page.getTotal());
+    }
+
+    /**
+     * 根据车次获取车上乘客
+     *
+     * @return
+     */
+    @Override
+    public ListQueryVO<TravelerVO> getTravelerListByTrain(GetTravelerListByTrainDTO dto) {
+        QueryWrapper<Traveler> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("train_id", dto.getTrainId())
+                .orderByDesc("update_time");
+        Page<Traveler> queryPage = new Page<>(dto.getPageIndex(), dto.getPageSize());
+        IPage<Traveler> page = travelerMapper.selectPage(queryPage, queryWrapper);
+        List<TravelerVO> list = page.getRecords().stream().map(TravelerVO::assemble).collect(Collectors.toList());
+        return new ListQueryVO<>(list, page.getTotal());
+    }
+
+    /**
+     * 获取当前在店的旅客
+     *
+     * @param dto
+     * @return
+     */
+    @Override
+    public ListQueryVO<TravelerVO> getTravelerListInHotel(GetTravelerInHotelDTO dto) {
+        QueryWrapper<Traveler> queryWrapper = new QueryWrapper<>();
+        Optional.ofNullable(dto.getName()).ifPresent(s -> queryWrapper.like("name", s));
+        Optional.ofNullable(dto.getHotelId()).ifPresent(s -> queryWrapper.eq("hotel_id", s));
+        queryWrapper.in("status", TravelerStatus.NOT_QUARANTINE, TravelerStatus.QUARANTINE);
+        Page<Traveler> queryPage = new Page<>(dto.getPageIndex(), dto.getPageSize());
+        IPage<Traveler> page = travelerMapper.selectPage(queryPage, queryWrapper);
+        List<TravelerVO> list = page.getRecords().stream().map(TravelerVO::assemble).collect(Collectors.toList());
+        return new ListQueryVO<>(list, page.getTotal());
+    }
+
+    /**
+     * 获取未开始隔离的旅客列表
+     *
+     * @param dto
+     * @return
+     */
+    @Override
+    public ListQueryVO<TravelerVO> getNotQuarantineTravelerList(ListQueryDTO dto) {
+        QueryWrapper<Traveler> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("status", TravelerStatus.NOT_QUARANTINE);
+        Page<Traveler> queryPage = new Page<>(dto.getPageIndex(), dto.getPageSize());
+        IPage<Traveler> page = travelerMapper.selectPage(queryPage, queryWrapper);
+        List<TravelerVO> list = page.getRecords().stream().map(TravelerVO::assemble).collect(Collectors.toList());
+        return new ListQueryVO<>(list, page.getTotal());
+    }
+
+    /**
+     * 开始隔离
+     *
+     * @param dto
+     */
+    @Override
+    @Transactional
+    public void startQuarantine(StartQuarantineDTO dto) {
+        Collection<Integer> travelerIds = Assert.notEmpty(dto.getTravelerIds());
+        JwtUser user = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UpdateWrapper<Traveler> updateWrapper = new UpdateWrapper<>();
+        DateTime startDate = DateUtil.parseDate(dto.getStartTime());
+        updateWrapper.set("status", TravelerStatus.QUARANTINE)
+                .set("quarantine_start_time", startDate)
+                .set("update_user_id", user.getId())
+                .set("update_user_name", user.getRealName())
+                .set("update_time", new Timestamp(System.currentTimeMillis()))
+                .in("id", travelerIds);
+        travelerMapper.update(null, updateWrapper);
+        temperatureProviderService.createTemperatureRecord();
     }
 }

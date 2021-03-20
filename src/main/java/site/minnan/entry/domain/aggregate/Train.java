@@ -112,4 +112,24 @@ public class Train extends ModifiableEntity {
     public void setUpdateUser(JwtUser jwtUser) {
         super.setUpdateUser(jwtUser.getId(), jwtUser.getRealName());
     }
+
+    /**
+     * 车次状态转至出发
+     *
+     * @param departureTime 出发时间
+     */
+    public void depart(Timestamp departureTime) {
+        this.status = TrainStatus.DEPARTED;
+        this.departureTime = departureTime;
+    }
+
+    /**
+     * 车辆达到酒店并转入
+     *
+     * @param arriveTime
+     */
+    public void arrive(Timestamp arriveTime) {
+        this.status = TrainStatus.ARRIVED;
+        this.arriveTime = arriveTime;
+    }
 }
