@@ -302,7 +302,29 @@ Content-Type: application/json
 Authorization: {{admin_token}}
 
 {
-  "date": "2021-03-19",
+  "date": "2021-03-20",
   "pageIndex": 1,
   "pageSize": 10
 }
+
+###
+POST {{baseUrl}}/temperature/recordTemperature
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+[
+  {
+    "id": 1,
+    "isNormal": 1,
+    "temperature": "37.1"
+  },
+  {
+    "id": 2,
+    "isNormal": 1,
+    "temperature": "37.1"
+  }
+]
+
+###
+POST {{baseUrl}}/traveler/endQuarantine/2
+Authorization: {{admin_token}}

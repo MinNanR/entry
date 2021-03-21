@@ -1,10 +1,12 @@
 package site.minnan.entry.userinterface.dto.temperture;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 
+@ApiModel("记录旅客体温参数")
 @Data
 public class RecordTemperatureDTO {
 

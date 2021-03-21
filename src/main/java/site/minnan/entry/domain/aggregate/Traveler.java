@@ -31,7 +31,7 @@ public class Traveler extends ModifiableEntity {
 
 
     /**
-     *id
+     * id
      */
     @TableId(type = IdType.AUTO)
     private Integer id;
@@ -145,9 +145,19 @@ public class Traveler extends ModifiableEntity {
         super.setUpdateUser(jwtUser.getId(), jwtUser.getRealName());
     }
 
-    public void arrive(Train train){
+    public void arrive(Train train) {
         this.hotelId = train.getHotelId();
         this.hotelName = train.getHotelName();
         this.arrivalTime = train.getArriveTime();
+    }
+
+    /**
+     * 旅客解除隔离
+     *
+     * @param time 解除隔离时间
+     */
+    public void endQuarantine(Timestamp time) {
+        this.status = TravelerStatus.RELEASED;
+        this.quarantineEndTime = time;
     }
 }

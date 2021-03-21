@@ -1,18 +1,25 @@
 package site.minnan.entry.application.service.impl;
 
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import site.minnan.entry.application.service.TemperatureService;
 import site.minnan.entry.domain.aggregate.TemperatureRecord;
+import site.minnan.entry.domain.entity.JwtUser;
 import site.minnan.entry.domain.mapper.TemperatureRecordMapper;
 import site.minnan.entry.domain.vo.ListQueryVO;
 import site.minnan.entry.domain.vo.temperture.TemperatureRecordVO;
 import site.minnan.entry.userinterface.dto.temperture.GetTemperatureRecordDTO;
+import site.minnan.entry.userinterface.dto.temperture.RecordTemperatureDTO;
 
+import java.sql.Timestamp;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,5 +46,19 @@ public class TemperatureServiceImpl implements TemperatureService {
         IPage<TemperatureRecord> page = temperatureRecordMapper.selectPage(queryPage, queryWrapper);
         List<TemperatureRecordVO> list = page.getRecords().stream().map(TemperatureRecordVO::assemble).collect(Collectors.toList());
         return new ListQueryVO<>(list, page.getTotal());
+    }
+
+    /**
+     * 记录乘客体温
+     *
+     * @param dtoList
+     */
+    @Override
+    @Transactional
+    public void recordTemperature(List<RecordTemperatureDTO> dtoList) {
+        Collection<RecordTemperatureDTO> dtos = Assert.notEmpty(dtoList);
+        JwtUser user = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        temperatureRecordMapper.filTemperatureRecord(dtos, time, user.getId(), user.getRealName());
     }
 }

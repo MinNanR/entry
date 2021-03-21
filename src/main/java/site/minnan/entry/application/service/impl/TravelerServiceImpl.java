@@ -1,6 +1,7 @@
 package site.minnan.entry.application.service.impl;
 
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
@@ -208,5 +209,27 @@ public class TravelerServiceImpl implements TravelerService {
                 .in("id", travelerIds);
         travelerMapper.update(null, updateWrapper);
         temperatureProviderService.createTemperatureRecord();
+    }
+
+    /**
+     * 结束隔离
+     *
+     * @param travelerId 旅客id
+     */
+    @Override
+    public void endQuarantine(Integer travelerId) {
+        Traveler traveler = travelerMapper.selectById(travelerId);
+        if (traveler == null) {
+            throw new EntityNotExistException("旅客不存在");
+        } else if (!TravelerStatus.QUARANTINE.equals(traveler.getStatus())) {
+            throw new UnmodifiableException("旅客当前未被隔离");
+        }
+        Timestamp current = new Timestamp(System.currentTimeMillis());
+        long diff = DateUtil.between(current, traveler.getQuarantineStartTime(), DateUnit.DAY);
+        if (diff < 14) {
+            throw new UnmodifiableException("隔离时间未到14天");
+        }
+        traveler.endQuarantine(current);
+        travelerMapper.updateById(traveler);
     }
 }

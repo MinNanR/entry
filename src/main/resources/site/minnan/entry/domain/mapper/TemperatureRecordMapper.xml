@@ -7,12 +7,22 @@
     <!--批量插入-->
     <insert id="insertBatch">
         insert entry_temperature_record (traveler_id, traveler_name, hotel_id, hotel_name, status, create_user_id,
-         create_user_name, create_time, update_user_id, update_user_name, update_time)
+        create_user_name, create_time, update_user_id, update_user_name, update_time)
         values
         <foreach collection="records" item="item" separator=",">
             (#{item.travelerId}, #{item.travelerName}, #{item.hotelId}, #{item.hotelName}, #{item.status},
-            #{item.createUserId}, #{item.createUserName}, #{item.createTime}, #{item.updateUserId},#{item.updateUserName},
-            #{item.updateTime})
+            #{item.createUserId}, #{item.createUserName}, #{item.createTime}, #{item.updateUserId},
+            #{item.updateUserName}, #{item.updateTime})
         </foreach>
     </insert>
+
+    <!--填充表格-->
+    <update id="filTemperatureRecord">
+        <foreach collection="dtos" item="item" separator=";">
+            update  entry_temperature_record set status = 'RECORDED',temperature=#{item.temperature},
+            temperature_normal = #{item.isNormal},measure_time = #{time}, update_user_id = #{userId},
+            update_user_name = #{userName}, update_time = #{time}
+            where id = #{item.id}
+        </foreach>
+    </update>
 </mapper>

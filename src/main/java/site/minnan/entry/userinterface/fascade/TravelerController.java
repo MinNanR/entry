@@ -94,6 +94,7 @@ public class TravelerController {
     @PostMapping("endQuarantine/{id}")
     public ResponseEntity<?> endQuarantine(@ApiParam(value = "旅客id", required = true, example = "1") @Valid @PathVariable("id")
                                            @NotNull(message = "未指定结束隔离的旅客") Integer travelerId) {
+        travelerService.endQuarantine(travelerId);
         return ResponseEntity.success();
     }
 

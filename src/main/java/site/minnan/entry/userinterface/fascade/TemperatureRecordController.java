@@ -35,6 +35,7 @@ public class TemperatureRecordController {
     @ApiOperation("记录旅客体温")
     @PostMapping("recordTemperature")
     public ResponseEntity<?> recordTemperature(@RequestBody @Valid List<RecordTemperatureDTO> dto) {
+        temperatureService.recordTemperature(dto);
         return ResponseEntity.success();
     }
 

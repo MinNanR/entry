@@ -81,4 +81,11 @@ public interface TravelerService {
      * @param dto
      */
     void startQuarantine(StartQuarantineDTO dto);
+
+    /**
+     * 结束隔离
+     *
+     * @param travelerId 旅客id
+     */
+    void endQuarantine(Integer travelerId);
 }
