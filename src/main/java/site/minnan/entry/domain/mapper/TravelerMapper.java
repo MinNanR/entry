@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import site.minnan.entry.domain.aggregate.Traveler;
+import site.minnan.entry.domain.vo.traveler.HotelData;
+import site.minnan.entry.userinterface.dto.traveler.GetHotelDataDTO;
 
 import java.util.Collection;
 import java.util.Map;
@@ -19,4 +21,6 @@ public interface TravelerMapper extends BaseMapper<Traveler> {
      * @param travelers
      */
     void travelerArrive(@Param("travelers") Collection<Traveler> travelers);
+
+    HotelData getHotelData(GetHotelDataDTO dto);
 }

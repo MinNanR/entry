@@ -1,6 +1,7 @@
 package site.minnan.entry.application.service;
 
 import site.minnan.entry.domain.vo.ListQueryVO;
+import site.minnan.entry.domain.vo.traveler.HotelData;
 import site.minnan.entry.domain.vo.traveler.TravelerArchive;
 import site.minnan.entry.domain.vo.traveler.TravelerVO;
 import site.minnan.entry.userinterface.dto.ListQueryDTO;
@@ -88,4 +89,12 @@ public interface TravelerService {
      * @param travelerId 旅客id
      */
     void endQuarantine(Integer travelerId);
+
+    /**
+     * 酒店面板数据
+     *
+     * @param dto
+     * @return
+     */
+    HotelData getHotelData(GetHotelDataDTO dto);
 }

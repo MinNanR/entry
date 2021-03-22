@@ -100,8 +100,9 @@ public class TravelerController {
 
     @ApiOperation("酒店数据面板")
     @PostMapping("getHotelData")
-    public ResponseEntity<HotelData> getHotelData() {
-        return ResponseEntity.success(null);
+    public ResponseEntity<HotelData> getHotelData(@RequestBody @Valid GetHotelDataDTO dto) {
+        HotelData vo = travelerService.getHotelData(dto);
+        return ResponseEntity.success(vo);
     }
 
     @ApiOperation("人员国籍归属分析")

@@ -19,6 +19,7 @@ import site.minnan.entry.domain.aggregate.Traveler;
 import site.minnan.entry.domain.entity.JwtUser;
 import site.minnan.entry.domain.mapper.TravelerMapper;
 import site.minnan.entry.domain.vo.ListQueryVO;
+import site.minnan.entry.domain.vo.traveler.HotelData;
 import site.minnan.entry.domain.vo.traveler.TravelerArchive;
 import site.minnan.entry.domain.vo.traveler.TravelerVO;
 import site.minnan.entry.infrastructure.enumerate.Gender;
@@ -231,5 +232,16 @@ public class TravelerServiceImpl implements TravelerService {
         }
         traveler.endQuarantine(current);
         travelerMapper.updateById(traveler);
+    }
+
+    /**
+     * 酒店面板数据
+     *
+     * @param dto
+     * @return
+     */
+    @Override
+    public HotelData getHotelData(GetHotelDataDTO dto) {
+        return travelerMapper.getHotelData(dto);
     }
 }

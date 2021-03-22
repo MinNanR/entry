@@ -328,3 +328,12 @@ Authorization: {{admin_token}}
 ###
 POST {{baseUrl}}/traveler/endQuarantine/2
 Authorization: {{admin_token}}
+
+###
+POST {{baseUrl}}/traveler/getHotelData
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{
+  "hotelId": 2
+}
