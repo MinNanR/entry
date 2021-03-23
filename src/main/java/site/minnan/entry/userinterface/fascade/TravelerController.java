@@ -12,6 +12,8 @@ import site.minnan.entry.domain.vo.traveler.HotelData;
 import site.minnan.entry.domain.vo.traveler.NationalityStatistics;
 import site.minnan.entry.domain.vo.traveler.TravelerArchive;
 import site.minnan.entry.domain.vo.traveler.TravelerVO;
+import site.minnan.entry.infrastructure.annocation.OperateLog;
+import site.minnan.entry.infrastructure.enumerate.Operation;
 import site.minnan.entry.userinterface.dto.ListQueryDTO;
 import site.minnan.entry.userinterface.dto.traveler.*;
 import site.minnan.entry.userinterface.response.ResponseEntity;
@@ -27,6 +29,7 @@ public class TravelerController {
     @Autowired
     private TravelerService travelerService;
 
+    @OperateLog(operation = Operation.ADD, module = "旅客",content = "添加旅客")
     @PreAuthorize("hasAnyAuthority('ADMIN','PORT_USER')")
     @ApiOperation("添加旅客")
     @PostMapping("addTraveler")
@@ -35,6 +38,7 @@ public class TravelerController {
         return ResponseEntity.success();
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','PORT_USER','HOTEL_USER')")
     @ApiOperation("人员明细")
     @PostMapping("getTravelerList")
     public ResponseEntity<ListQueryVO<TravelerVO>> getTravelerList(@RequestBody @Valid GetTravelerListDTO dto) {
@@ -50,6 +54,8 @@ public class TravelerController {
         return ResponseEntity.success(vo);
     }
 
+    @OperateLog(operation = Operation.DELETE, module = "旅客",content = "删除旅客")
+    @PreAuthorize("hasAnyAuthority('ADMIN','PORT_USER')")
     @ApiOperation("删除旅客")
     @PostMapping("deleteTraveler/{id}")
     public ResponseEntity<?> deleteTraveler(@ApiParam(value = "旅客id", required = true, example = "1") @Valid @PathVariable("id")
@@ -82,6 +88,7 @@ public class TravelerController {
         return ResponseEntity.success(vo);
     }
 
+    @OperateLog(operation = Operation.UPDATE, module = "旅客",content = "隔离旅客")
     @PreAuthorize("hasAnyAuthority('ADMIN','HOTEL_USER')")
     @ApiOperation("开始隔离")
     @PostMapping("startQuarantine")
@@ -90,6 +97,8 @@ public class TravelerController {
         return ResponseEntity.success();
     }
 
+    @OperateLog(operation = Operation.UPDATE, module = "旅客",content = "接触隔离旅客")
+    @PreAuthorize("hasAnyAuthority('ADMIN','HOTEL_USER')")
     @ApiOperation("结束隔离")
     @PostMapping("endQuarantine/{id}")
     public ResponseEntity<?> endQuarantine(@ApiParam(value = "旅客id", required = true, example = "1") @Valid @PathVariable("id")
@@ -98,6 +107,7 @@ public class TravelerController {
         return ResponseEntity.success();
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','HOTEL_USER')")
     @ApiOperation("酒店数据面板")
     @PostMapping("getHotelData")
     public ResponseEntity<HotelData> getHotelData(@RequestBody @Valid GetHotelDataDTO dto) {
@@ -105,12 +115,14 @@ public class TravelerController {
         return ResponseEntity.success(vo);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','PORT_USER','HOTEL_USER')")
     @ApiOperation("人员国籍归属分析")
     @PostMapping("getNationalityStatistics")
     public ResponseEntity<NationalityStatistics> getNationalityStatistics() {
         return ResponseEntity.success(null);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','PORT_USER','HOTEL_USER')")
     @ApiOperation("旅客个人档案")
     @PostMapping("getPersonalArchive/{id}")
     public ResponseEntity<TravelerArchive> getPersonalArchive(@ApiParam(value = "旅客id", required = true, example = "1") @Valid @PathVariable("id")

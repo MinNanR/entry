@@ -130,10 +130,10 @@ Content-Type: application/json
 Authorization: {{admin_token}}
 
 {
-  "birthday": "1997-04-13",
-  "cardNumber": "441900199704132423",
+  "birthday": "1997-04-15",
+  "cardNumber": "441900199704152423",
   "gender": "MALE",
-  "name": "李四",
+  "name": "王大炮",
   "nationality": "中国",
   "portId": 4,
   "portName": "横琴口岸"

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import site.minnan.entry.application.service.TemperatureService;
 import site.minnan.entry.domain.vo.ListQueryVO;
 import site.minnan.entry.domain.vo.temperture.TemperatureRecordVO;
+import site.minnan.entry.infrastructure.annocation.OperateLog;
+import site.minnan.entry.infrastructure.enumerate.Operation;
 import site.minnan.entry.userinterface.dto.temperture.GetTemperatureRecordDTO;
 import site.minnan.entry.userinterface.dto.temperture.RecordTemperatureDTO;
 import site.minnan.entry.userinterface.response.ResponseEntity;
@@ -32,6 +34,7 @@ public class TemperatureRecordController {
         return ResponseEntity.success(vo);
     }
 
+    @OperateLog(operation = Operation.UPDATE, module = "体温", content = "记录体温")
     @ApiOperation("记录旅客体温")
     @PostMapping("recordTemperature")
     public ResponseEntity<?> recordTemperature(@RequestBody @Valid List<RecordTemperatureDTO> dto) {

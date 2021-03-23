@@ -1,7 +1,6 @@
 package site.minnan.entry.userinterface.fascade;
 
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,8 @@ import site.minnan.entry.domain.vo.ListQueryVO;
 import site.minnan.entry.domain.vo.train.ArrivedTrainVO;
 import site.minnan.entry.domain.vo.train.ArrivingTrainVO;
 import site.minnan.entry.domain.vo.train.TrainVO;
-import site.minnan.entry.userinterface.dto.ListQueryDTO;
+import site.minnan.entry.infrastructure.annocation.OperateLog;
+import site.minnan.entry.infrastructure.enumerate.Operation;
 import site.minnan.entry.userinterface.dto.train.*;
 import site.minnan.entry.userinterface.response.ResponseEntity;
 
@@ -27,6 +27,7 @@ public class TrainController {
     @Autowired
     private TrainService trainService;
 
+    @OperateLog(operation = Operation.ADD, module = "车次",content = "创建车次")
     @PreAuthorize("hasAnyAuthority('ADMIN','PORT_USER')")
     @ApiOperation("创建车次")
     @PostMapping("addTrain")
@@ -35,6 +36,7 @@ public class TrainController {
         return ResponseEntity.success();
     }
 
+    @OperateLog(operation = Operation.DELETE, module = "车次",content = "删除车次")
     @PreAuthorize("hasAnyAuthority('ADMIN','PORT_USER')")
     @ApiOperation("删除车次")
     @PostMapping("deleteTrain/{id}")
@@ -44,6 +46,7 @@ public class TrainController {
         return ResponseEntity.success();
     }
 
+    @OperateLog(operation = Operation.UPDATE, module = "车次",content = "旅客登车")
     @PreAuthorize("hasAnyAuthority('ADMIN','PORT_USER')")
     @ApiOperation("旅客登车")
     @PostMapping("board")
@@ -52,6 +55,7 @@ public class TrainController {
         return ResponseEntity.success();
     }
 
+    @OperateLog(operation = Operation.UPDATE, module = "车次",content = "车辆发车")
     @PreAuthorize("hasAnyAuthority('ADMIN','PORT_USER')")
     @ApiOperation("车次发车")
     @PostMapping("depart/{id}")
@@ -77,6 +81,8 @@ public class TrainController {
         return ResponseEntity.success(vo);
     }
 
+
+    @PreAuthorize("hasAnyAuthority('ADMIN','HOTEL_USER')")
     @ApiOperation("酒店人员-查询已转入该酒店的车次列表")
     @PostMapping("getTrainList/arrived")
     public ResponseEntity<ListQueryVO<ArrivedTrainVO>> getArrivedTrainList(@RequestBody @Valid GetTrainListDTO dto) {
@@ -84,6 +90,8 @@ public class TrainController {
         return ResponseEntity.success(vo);
     }
 
+    @OperateLog(operation = Operation.UPDATE, module = "车次",content = "车辆抵达")
+    @PreAuthorize("hasAnyAuthority('ADMIN','HOTEL_USER')")
     @ApiOperation("酒店人员-车次转入")
     @PostMapping("acceptTrain")
     public ResponseEntity<?> acceptTrain(@RequestBody @Valid AcceptTrainDTO dto) {

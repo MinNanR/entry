@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.minnan.entry.application.service.AuthService;
 import site.minnan.entry.domain.vo.auth.LoginVO;
+import site.minnan.entry.infrastructure.annocation.OperateLog;
+import site.minnan.entry.infrastructure.enumerate.Operation;
 import site.minnan.entry.userinterface.dto.auth.PasswordLoginDTO;
 import site.minnan.entry.userinterface.response.ResponseEntity;
 
@@ -34,6 +36,7 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
+    @OperateLog(operation = Operation.LOGIN, module = "登录", content = " 登录成功")
     @ApiOperation("密码登录")
     @PostMapping("/login/password")
     public ResponseEntity<LoginVO> passwordLogin(@RequestBody @Valid PasswordLoginDTO dto) {

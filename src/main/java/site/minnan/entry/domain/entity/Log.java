@@ -14,7 +14,7 @@ import java.sql.Timestamp;
  * 日志
  * @author Minnan on 2021/2/25
  */
-@TableName("record_log")
+@TableName("entry_log")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor

@@ -1,19 +1,21 @@
 package site.minnan.entry.userinterface.fascade;
 
+import cn.hutool.core.map.MapBuilder;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import net.sf.jsqlparser.statement.drop.Drop;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.minnan.entry.domain.vo.DropDownBox;
-import site.minnan.entry.infrastructure.enumerate.Role;
-import site.minnan.entry.infrastructure.enumerate.TemperatureRecordStatus;
-import site.minnan.entry.infrastructure.enumerate.TrainStatus;
-import site.minnan.entry.infrastructure.enumerate.TravelerStatus;
+import site.minnan.entry.domain.vo.ListQueryVO;
+import site.minnan.entry.infrastructure.enumerate.*;
 import site.minnan.entry.userinterface.response.ResponseEntity;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,6 +24,7 @@ import java.util.stream.Stream;
 @RequestMapping("/entry/common")
 public class CommonController {
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','PORT_USER','HOTEL_USER')")
     @ApiOperation("角色下拉框")
     @PostMapping("getRoleDropDown")
     public ResponseEntity<List<DropDownBox>> getRoleDropDown() {
@@ -31,6 +34,7 @@ public class CommonController {
         return ResponseEntity.success(dropDownBoxList);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','PORT_USER','HOTEL_USER')")
     @ApiOperation("车次状态下拉框")
     @PostMapping("getTrainStatusDropDown")
     public ResponseEntity<List<DropDownBox>> getTrainStatusDropDown() {
@@ -40,6 +44,7 @@ public class CommonController {
         return ResponseEntity.success(dropDownBoxList);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','PORT_USER','HOTEL_USER')")
     @ApiOperation("旅客状态下拉框")
     @PostMapping("getTravelerStatusDropDown")
     public ResponseEntity<List<DropDownBox>> getTravelerStatusDropDown() {
@@ -49,6 +54,7 @@ public class CommonController {
         return ResponseEntity.success(dropDownBoxList);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','PORT_USER','HOTEL_USER')")
     @ApiOperation("体温测量记录状态下拉框")
     @PostMapping("getTemperatureRecordStatusDropDown")
     public ResponseEntity<List<DropDownBox>> getTemperatureRecordStatusDropDown() {
@@ -58,5 +64,13 @@ public class CommonController {
         return ResponseEntity.success(dropDownBoxList);
     }
 
-
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PostMapping("getLogOperation")
+    public ResponseEntity<ListQueryVO<Map<Object, Object>>> getLogOperation() {
+        List<Map<Object, Object>> list = Arrays.stream(Operation.values())
+                .map(e -> MapBuilder.create().put("key", e.operationName()).put("value", e.operationName()).build())
+                .collect(Collectors.toList());
+        ListQueryVO<Map<Object, Object>> vo = new ListQueryVO<>(list, null);
+        return ResponseEntity.success(vo);
+    }
 }

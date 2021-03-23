@@ -12,6 +12,8 @@ import site.minnan.entry.application.service.LocationService;
 import site.minnan.entry.domain.vo.DropDownBox;
 import site.minnan.entry.domain.vo.ListQueryVO;
 import site.minnan.entry.domain.vo.location.LocationVO;
+import site.minnan.entry.infrastructure.annocation.OperateLog;
+import site.minnan.entry.infrastructure.enumerate.Operation;
 import site.minnan.entry.userinterface.dto.location.AddLocationDTO;
 import site.minnan.entry.userinterface.dto.location.GetLocationDropDownDTO;
 import site.minnan.entry.userinterface.dto.location.GetLocationListDTO;
@@ -29,6 +31,7 @@ public class LocationController {
     @Autowired
     private LocationService locationService;
 
+    @OperateLog(operation = Operation.ADD, module = "位置", content = "添加位置")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ApiOperation("添加位置")
     @PostMapping("addLocation")
@@ -45,6 +48,7 @@ public class LocationController {
         return ResponseEntity.success(vo);
     }
 
+    @OperateLog(operation = Operation.UPDATE, module = "位置", content = "修改位置信息")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ApiOperation("更新位置信息")
     @PostMapping("updateLocation")
@@ -53,6 +57,7 @@ public class LocationController {
         return ResponseEntity.success();
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','PORT_USER','HOTEL_USER')")
     @ApiOperation("位置下拉框")
     @PostMapping("getLocationDropDown")
     public ResponseEntity<List<DropDownBox>> getLocationDropDown(@RequestBody GetLocationDropDownDTO dto) {

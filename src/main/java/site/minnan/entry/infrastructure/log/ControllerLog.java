@@ -13,8 +13,11 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import site.minnan.entry.application.service.LogService;
 import site.minnan.entry.domain.entity.JwtUser;
+import site.minnan.entry.infrastructure.annocation.OperateLog;
 import site.minnan.entry.infrastructure.utils.RedisUtil;
+import site.minnan.entry.infrastructure.utils.WebUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
@@ -25,8 +28,8 @@ import java.util.Arrays;
 @Slf4j
 public class ControllerLog {
 
-//    @Autowired
-//    private LogService logService;
+    @Autowired
+    private LogService logService;
 
     @Autowired
     private RedisUtil redisUtil;
@@ -51,17 +54,17 @@ public class ControllerLog {
         time = System.currentTimeMillis() - time;
         String responseString = new JSONObject(retValue).toJSONString(0);
         log.info("controller调用{}完成，返回数据:{}，用时{}ms", methodFullName, responseString, time);
-//        //获取操作日志注解
-//        MethodSignature methodSignature = (MethodSignature) proceedingJoinPoint.getSignature();
-//        OperateLog operateLog = methodSignature.getMethod().getAnnotation(OperateLog.class);
-//        if (operateLog != null) {
-//            try {
-//                String ip = WebUtil.getIpAddr(request);
-//                logService.addLog(operateLog, ip);
-//            } catch (Exception e) {
-//                log.warn("记录日志异常,{}", e.getMessage());
-//            }
-//        }
+        //获取操作日志注解
+        MethodSignature methodSignature = (MethodSignature) proceedingJoinPoint.getSignature();
+        OperateLog operateLog = methodSignature.getMethod().getAnnotation(OperateLog.class);
+        if (operateLog != null) {
+            try {
+                String ip = WebUtil.getIpAddr(request);
+                logService.addLog(operateLog, ip);
+            } catch (Exception e) {
+                log.warn("记录日志异常,{}", e.getMessage());
+            }
+        }
         return retValue;
     }
 }

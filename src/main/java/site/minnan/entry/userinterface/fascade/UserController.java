@@ -10,6 +10,8 @@ import site.minnan.entry.application.service.UserService;
 import site.minnan.entry.domain.vo.ListQueryVO;
 import site.minnan.entry.domain.vo.user.UserInfoVO;
 import site.minnan.entry.domain.vo.user.UserVO;
+import site.minnan.entry.infrastructure.annocation.OperateLog;
+import site.minnan.entry.infrastructure.enumerate.Operation;
 import site.minnan.entry.userinterface.dto.user.AddUserDTO;
 import site.minnan.entry.userinterface.dto.user.GetUserListDTO;
 import site.minnan.entry.userinterface.dto.user.UpdatePasswordDTO;
@@ -27,6 +29,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @OperateLog(operation = Operation.ADD, module = "用户", content = "添加用户")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ApiOperation("添加用户")
     @PostMapping("addUser")
@@ -43,6 +46,7 @@ public class UserController {
         return ResponseEntity.success(vo);
     }
 
+    @OperateLog(operation = Operation.UPDATE, module = "用户", content = "修改用户密码")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ApiOperation("修改指定用户的密码")
     @PostMapping("updatePassword")
@@ -51,6 +55,7 @@ public class UserController {
         return ResponseEntity.success();
     }
 
+    @OperateLog(operation = Operation.UPDATE,module = "用户",content = "用户修改信息")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ApiOperation("修改当前用户的信息（密码和真实姓名)")
     @PostMapping("updateUserInfo")
@@ -66,6 +71,7 @@ public class UserController {
         return ResponseEntity.success(null);
     }
 
+    @OperateLog(operation = Operation.UPDATE, module = "用户",content = "禁用用户")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ApiOperation("禁用用户")
     @PostMapping("disableUser/{id}")
@@ -75,6 +81,7 @@ public class UserController {
         return ResponseEntity.success();
     }
 
+    @OperateLog(operation = Operation.UPDATE, module = "用户",content = "启用用户")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ApiOperation("启用用户")
     @PostMapping("enableUser/{id}")
