@@ -46,6 +46,11 @@ public class Traveler extends ModifiableEntity {
     private String nationality;
 
     /**
+     * 省份
+     */
+    private String province;
+
+    /**
      * 旅客证件号码
      */
     private String cardNumber;

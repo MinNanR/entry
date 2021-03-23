@@ -34,6 +34,9 @@ public class TravelerVO {
     @ApiModelProperty(value = "国籍", example = "中国")
     private String nationality;
 
+    @ApiModelProperty(value = "省份", example = "广东")
+    private String province;
+
     @ApiModelProperty(value = "入境时间（格式：yyyy-MM-dd HH:mm）", example = "2021-03-16 16:00")
     private String entryTime;
 
@@ -64,11 +67,13 @@ public class TravelerVO {
                 .age(traveler.getAge())
                 .cardNumber(traveler.getCardNumber())
                 .nationality(traveler.getNationality())
+                .province(traveler.getProvince())
                 .entryTime(DateUtil.format(traveler.getEntryTime(), "yyyy-MM-dd HH:mm"))
                 .portName(traveler.getPortName())
                 .status(traveler.getStatus().getStatus())
                 .statusCode(traveler.getStatus().getValue());
-        Optional.ofNullable(traveler.getBoardingTime()).ifPresent(s -> builder.boardingTime(DateUtil.format(s, "yyyy-MM-dd HH:mm")));
+        Optional.ofNullable(traveler.getBoardingTime()).ifPresent(s -> builder.boardingTime(DateUtil.format(s, "yyyy" +
+                "-MM-dd HH:mm")));
         Optional.ofNullable(traveler.getArrivalTime()).ifPresent(s -> builder.hotelName(traveler.getHotelName()));
         return builder.build();
     }

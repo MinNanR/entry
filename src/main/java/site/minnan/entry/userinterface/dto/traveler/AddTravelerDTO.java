@@ -20,7 +20,7 @@ public class AddTravelerDTO {
     @NotEmpty(message = "旅客姓名不能为空")
     private String name;
 
-    @ApiModelProperty(value = "证件号", required = true, example = "441933199704122345",dataType = "String")
+    @ApiModelProperty(value = "证件号", required = true, example = "441933199704122345", dataType = "String")
     @NotEmpty(message = "证件号不能为空")
     private String cardNumber;
 
@@ -35,11 +35,14 @@ public class AddTravelerDTO {
     @NotEmpty(message = "国籍不能为空")
     private String nationality;
 
+    @ApiModelProperty(value = "省份", example = "广东")
+    private String province;
+
     @ApiModelProperty(value = "入境口岸id", required = true, example = "4")
     @NotNull(message = "未指定入境口岸")
     private Integer portId;
 
-    @ApiModelProperty(value = "入境口岸名称",required = true,example = "横琴口岸")
+    @ApiModelProperty(value = "入境口岸名称", required = true, example = "横琴口岸")
     @NotEmpty(message = "未指定入境口岸")
     private String portName;
 }

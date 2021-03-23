@@ -1,5 +1,6 @@
 package site.minnan.entry.application.service.impl;
 
+import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
@@ -19,9 +20,7 @@ import site.minnan.entry.domain.aggregate.Traveler;
 import site.minnan.entry.domain.entity.JwtUser;
 import site.minnan.entry.domain.mapper.TravelerMapper;
 import site.minnan.entry.domain.vo.ListQueryVO;
-import site.minnan.entry.domain.vo.traveler.HotelData;
-import site.minnan.entry.domain.vo.traveler.TravelerArchive;
-import site.minnan.entry.domain.vo.traveler.TravelerVO;
+import site.minnan.entry.domain.vo.traveler.*;
 import site.minnan.entry.infrastructure.enumerate.Gender;
 import site.minnan.entry.infrastructure.enumerate.TravelerStatus;
 import site.minnan.entry.infrastructure.exception.EntityNotExistException;
@@ -30,9 +29,7 @@ import site.minnan.entry.userinterface.dto.ListQueryDTO;
 import site.minnan.entry.userinterface.dto.traveler.*;
 
 import java.sql.Timestamp;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,6 +53,7 @@ public class TravelerServiceImpl implements TravelerService {
                 .cardNumber(dto.getCardNumber())
                 .gender(Gender.valueOf(dto.getGender().toUpperCase()))
                 .nationality(dto.getNationality())
+                .province(dto.getProvince())
                 .birthday(DateUtil.parse(dto.getBirthday()))
                 .age(DateUtil.ageOfNow(dto.getBirthday()))
                 .portId(dto.getPortId())
@@ -243,5 +241,36 @@ public class TravelerServiceImpl implements TravelerService {
     @Override
     public HotelData getHotelData(GetHotelDataDTO dto) {
         return travelerMapper.getHotelData(dto);
+    }
+
+    /**
+     * 获取人员波动数量分析
+     *
+     * @return
+     */
+    @Override
+    public NumberTrendData getNumberTrend() {
+        QueryWrapper<Traveler> queryWrapper = new QueryWrapper<>();
+        DateTime boundary = DateTime.now().offset(DateField.DAY_OF_MONTH, -7);
+        boundary = DateUtil.beginOfDay(boundary);
+        queryWrapper.gt("entry_time", boundary);
+        List<Traveler> travelerList = travelerMapper.selectList(queryWrapper);
+        Map<DateTime, List<Traveler>> groupByDate = travelerList.stream()
+                .collect(Collectors.groupingBy(e -> DateUtil.beginOfDay(e.getEntryTime())));
+        NumberTrendData vo = new NumberTrendData();
+        groupByDate.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .forEach(entry -> vo.add(entry.getValue().size(), entry.getKey()));
+        return vo;
+    }
+
+    /**
+     * 人员国籍归属分析
+     *
+     * @return
+     */
+    @Override
+    public NationalityStatics getNationalityStatics() {
+        return null;
     }
 }

@@ -8,10 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import site.minnan.entry.application.service.TravelerService;
 import site.minnan.entry.domain.vo.ListQueryVO;
-import site.minnan.entry.domain.vo.traveler.HotelData;
-import site.minnan.entry.domain.vo.traveler.NationalityStatistics;
-import site.minnan.entry.domain.vo.traveler.TravelerArchive;
-import site.minnan.entry.domain.vo.traveler.TravelerVO;
+import site.minnan.entry.domain.vo.traveler.*;
 import site.minnan.entry.infrastructure.annocation.OperateLog;
 import site.minnan.entry.infrastructure.enumerate.Operation;
 import site.minnan.entry.userinterface.dto.ListQueryDTO;
@@ -129,5 +126,13 @@ public class TravelerController {
                                                               @NotNull(message = "未指定结束隔离的旅客") Integer travelerId) {
         TravelerArchive travelerArchive = travelerService.getTravelerArchive(travelerId);
         return ResponseEntity.success(travelerArchive);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN','PORT_USER','HOTEL_USER')")
+    @ApiOperation("获取人员数量波动分析")
+    @PostMapping("getNumberTrend")
+    public ResponseEntity<NumberTrendData> getNumberTrend(){
+        NumberTrendData vo = travelerService.getNumberTrend();
+        return ResponseEntity.success(vo);
     }
 }

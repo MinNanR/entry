@@ -337,3 +337,10 @@ Authorization: {{admin_token}}
 {
   "hotelId": 2
 }
+
+###
+POST {{baseUrl}}/traveler/getNumberTrend
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{}

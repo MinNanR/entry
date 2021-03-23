@@ -1,13 +1,9 @@
 package site.minnan.entry.application.service;
 
 import site.minnan.entry.domain.vo.ListQueryVO;
-import site.minnan.entry.domain.vo.traveler.HotelData;
-import site.minnan.entry.domain.vo.traveler.TravelerArchive;
-import site.minnan.entry.domain.vo.traveler.TravelerVO;
+import site.minnan.entry.domain.vo.traveler.*;
 import site.minnan.entry.userinterface.dto.ListQueryDTO;
 import site.minnan.entry.userinterface.dto.traveler.*;
-
-import java.util.Collection;
 
 /**
  * @author Minnan on 2021/3/18
@@ -97,4 +93,17 @@ public interface TravelerService {
      * @return
      */
     HotelData getHotelData(GetHotelDataDTO dto);
+
+    /**
+     * 获取人员波动数量分析
+     *
+     * @return
+     */
+    NumberTrendData getNumberTrend();
+
+    /**
+     * 人员国籍归属分析
+     * @return
+     */
+    NationalityStatics getNationalityStatics();
 }
