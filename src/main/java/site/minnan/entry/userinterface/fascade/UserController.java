@@ -29,6 +29,8 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
+
     @OperateLog(operation = Operation.ADD, module = "用户", content = "添加用户")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ApiOperation("添加用户")
@@ -41,7 +43,7 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ApiOperation("查询用户")
     @PostMapping("getUserList")
-    public ResponseEntity<ListQueryVO<UserVO>> getUserVO(@RequestBody @Valid GetUserListDTO dto) {
+    public ResponseEntity<ListQueryVO<UserVO>> getUserList(@RequestBody @Valid GetUserListDTO dto) {
         ListQueryVO<UserVO> vo = userService.getUserList(dto);
         return ResponseEntity.success(vo);
     }

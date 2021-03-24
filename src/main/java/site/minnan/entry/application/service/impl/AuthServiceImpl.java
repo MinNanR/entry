@@ -1,25 +1,20 @@
 package site.minnan.entry.application.service.impl;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.digest.MD5;
-import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import site.minnan.entry.application.provider.StaffProviderService;
 import site.minnan.entry.application.service.AuthService;
 import site.minnan.entry.domain.aggregate.AuthUser;
-import site.minnan.entry.domain.aggregate.Staff;
 import site.minnan.entry.domain.entity.JwtUser;
 import site.minnan.entry.domain.mapper.AuthUserMapper;
 import site.minnan.entry.domain.vo.auth.LoginVO;
-import site.minnan.entry.infrastructure.enumerate.Role;
 import site.minnan.entry.infrastructure.utils.JwtUtil;
 import site.minnan.entry.infrastructure.utils.RedisUtil;
 
@@ -75,9 +70,6 @@ public class AuthServiceImpl implements AuthService {
                 jwtUser.getAuthorities().stream().map(GrantedAuthority::getAuthority).findFirst().orElse("");
         LoginVO vo = new LoginVO(token, role);
         vo.setRealName(jwtUser.getRealName());
-        if (!Role.ADMIN.getValue().equals(role)) {
-            Staff staff = staffProviderService.getStaffByUser(jwtUser.getId());
-        }
         return vo;
     }
 
@@ -93,9 +85,5 @@ public class AuthServiceImpl implements AuthService {
         Optional<AuthUser> userOptional = Optional.ofNullable(userInDB);
         userOptional.ifPresent(user -> redisUtil.setValue("authUser::" + username, user, Duration.ofMinutes(30)));
         return userOptional;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(MD5.create().digestHex("123456"));
     }
 }

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import site.minnan.entry.application.service.LocationService;
@@ -24,6 +25,7 @@ import site.minnan.entry.userinterface.dto.location.UpdateLocationDTO;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,6 +33,10 @@ public class LocationServiceImpl implements LocationService {
 
     @Autowired
     private LocationMapper locationMapper;
+
+    @Autowired
+    @Qualifier("BlankFilter")
+    private Function<String, Optional<String>> blankFilter;
 
     /**
      * 添加位置
@@ -60,8 +66,8 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public ListQueryVO<LocationVO> getLocationList(GetLocationListDTO dto) {
         QueryWrapper<Location> queryWrapper = new QueryWrapper<>();
-        Optional.ofNullable(dto.getLocationName()).ifPresent(s -> queryWrapper.eq("name", s));
-        Optional.ofNullable(dto.getLocationType()).ifPresent(s -> queryWrapper.eq("type", s));
+        blankFilter.apply(dto.getLocationName()).ifPresent(s -> queryWrapper.eq("name", s));
+        blankFilter.apply(dto.getLocationType()).ifPresent(s -> queryWrapper.eq("type", s));
         queryWrapper.orderByDesc("update_time");
         Page<Location> queryPage = new Page<>(dto.getPageIndex(), dto.getPageSize());
         IPage<Location> page = locationMapper.selectPage(queryPage, queryWrapper);
@@ -95,9 +101,9 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public List<DropDownBox> getDropDownBox(GetLocationDropDownDTO dto) {
         QueryWrapper<Location> queryWrapper = new QueryWrapper<>();
-        Optional.ofNullable(dto.getType()).ifPresent(s -> queryWrapper.eq("type", s));
-        Optional.ofNullable(dto.getProvince()).ifPresent(s -> queryWrapper.eq("province", s));
-        Optional.ofNullable(dto.getCity()).ifPresent(s -> queryWrapper.eq("city", s));
+        blankFilter.apply(dto.getType()).ifPresent(s -> queryWrapper.eq("type", s));
+        blankFilter.apply(dto.getProvince()).ifPresent(s -> queryWrapper.eq("province", s));
+        blankFilter.apply(dto.getCity()).ifPresent(s -> queryWrapper.eq("city", s));
         List<Location> list = locationMapper.selectList(queryWrapper);
         return list.stream().map(e -> new DropDownBox(e.getId().toString(), e.getName())).collect(Collectors.toList());
     }

@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,7 @@ import site.minnan.entry.userinterface.dto.traveler.*;
 
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,6 +43,10 @@ public class TravelerServiceImpl implements TravelerService {
 
     @Autowired
     private TemperatureProviderService temperatureProviderService;
+
+    @Autowired
+    @Qualifier("BlankFilter")
+    private Function<String, Optional<String>> blankFilter;
 
     /**
      * 添加旅客
@@ -81,7 +87,7 @@ public class TravelerServiceImpl implements TravelerService {
             DateTime endTime = DateUtil.parse(dto.getEndTime(), "yyyy-MM-dd HH:mm");
             queryWrapper.between("entry_time", startTime, endTime);
         }
-        Optional.ofNullable(dto.getName()).ifPresent(s -> queryWrapper.like("name", s));
+        blankFilter.apply(dto.getName()).ifPresent(s -> queryWrapper.like("name", s));
         Page<Traveler> queryPage = new Page<>(dto.getPageIndex(), dto.getPageSize());
         IPage<Traveler> page = travelerMapper.selectPage(queryPage, queryWrapper);
         List<TravelerVO> list = page.getRecords().stream().map(TravelerVO::assemble).collect(Collectors.toList());
@@ -132,7 +138,7 @@ public class TravelerServiceImpl implements TravelerService {
                 .eq("port_id", dto.getPortId())
                 .eq("status", TravelerStatus.ENTRY)
                 .orderByDesc("update_time");
-        Optional.ofNullable(dto.getName()).ifPresent(s -> queryWrapper.like("name", s));
+        blankFilter.apply(dto.getName()).ifPresent(s -> queryWrapper.like("name", s));
         Page<Traveler> queryPage = new Page<>(dto.getPageIndex(), dto.getPageSize());
         IPage<Traveler> page = travelerMapper.selectPage(queryPage, queryWrapper);
         List<TravelerVO> list = page.getRecords().stream().map(TravelerVO::toDropDown).collect(Collectors.toList());
@@ -164,7 +170,7 @@ public class TravelerServiceImpl implements TravelerService {
     @Override
     public ListQueryVO<TravelerVO> getTravelerListInHotel(GetTravelerInHotelDTO dto) {
         QueryWrapper<Traveler> queryWrapper = new QueryWrapper<>();
-        Optional.ofNullable(dto.getName()).ifPresent(s -> queryWrapper.like("name", s));
+        blankFilter.apply(dto.getName()).ifPresent(s -> queryWrapper.like("name", s));
         Optional.ofNullable(dto.getHotelId()).ifPresent(s -> queryWrapper.eq("hotel_id", s));
         queryWrapper.in("status", TravelerStatus.NOT_QUARANTINE, TravelerStatus.QUARANTINE);
         Page<Traveler> queryPage = new Page<>(dto.getPageIndex(), dto.getPageSize());

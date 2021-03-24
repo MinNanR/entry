@@ -1,5 +1,6 @@
 package site.minnan.entry.userinterface.dto.user;
 
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

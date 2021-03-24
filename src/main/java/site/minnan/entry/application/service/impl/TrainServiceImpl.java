@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +33,7 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,6 +44,10 @@ public class TrainServiceImpl implements TrainService {
 
     @Autowired
     private TrainMapper trainMapper;
+
+    @Autowired
+    @Qualifier("BlankFilter")
+    private Function<String, Optional<String>> blankFilter;
 
     /**
      * 添加车次
@@ -96,7 +102,7 @@ public class TrainServiceImpl implements TrainService {
     @Override
     public ListQueryVO<TrainVO> getTrainList(GetTrainListDTO dto) {
         QueryWrapper<Train> queryWrapper = new QueryWrapper<>();
-        Optional.ofNullable(dto.getCarNumber()).ifPresent(s -> queryWrapper.like("car_number", s));
+        blankFilter.apply(dto.getCarNumber()).ifPresent(s -> queryWrapper.like("car_number", s));
         Integer totalCount = trainMapper.selectCount(queryWrapper);
         List<TrainData> trainList = totalCount > 0 ? trainMapper.getTrainList(dto.getCarNumber(), dto.getStart(),
                 dto.getPageSize()) : ListUtil.empty();
@@ -149,7 +155,7 @@ public class TrainServiceImpl implements TrainService {
     public ListQueryVO<ArrivingTrainVO> getNotArrivedTrainList(GetNotArrivedTrainListDTO dto) {
         QueryWrapper<Train> queryWrapper = new QueryWrapper<>();
         Optional.ofNullable(dto.getHotelId()).ifPresent(s -> queryWrapper.eq("hotel_id", s));
-        Optional.ofNullable(dto.getCarNumber()).ifPresent(s -> queryWrapper.like("car_number", s));
+        blankFilter.apply(dto.getCarNumber()).ifPresent(s -> queryWrapper.like("car_number", s));
         queryWrapper.eq("status", TrainStatus.DEPARTED);
         Integer totalCount = trainMapper.selectCount(queryWrapper);
         List<TrainData> trainList = totalCount > 0 ?

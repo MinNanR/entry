@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import site.minnan.entry.infrastructure.utils.JwtUtil;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -66,7 +68,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            String requestTokenHeader = request.getHeader(authenticationHeader);
+            String requestTokenHeader = getTokenString(request);
             String username = null;
             String jwtToken = null;
             //获取token
@@ -85,7 +87,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                         if (jwtUtil.validateToken(jwtToken, userDetails)) {
                             UsernamePasswordAuthenticationToken token =
                                     new UsernamePasswordAuthenticationToken(userDetails,
-                                    null, userDetails.getAuthorities());
+                                            null, userDetails.getAuthorities());
                             token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                             SecurityContextHolder.getContext().setAuthentication(token);
                             Date expireDate = jwtUtil.getExpirationDateFromToken(jwtToken);
@@ -105,5 +107,21 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(request, response);
+    }
+
+    private String getTokenString(HttpServletRequest request) {
+        String requestTokenHeader = request.getHeader(authenticationHeader);
+        if (StrUtil.isNotBlank(requestTokenHeader)) {
+            return requestTokenHeader;
+        }
+        Cookie[] cookies = request.getCookies();
+        if(ArrayUtil.isNotEmpty(cookies)){
+            for (Cookie cookie : cookies) {
+                if (authenticationHeader.equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
     }
 }

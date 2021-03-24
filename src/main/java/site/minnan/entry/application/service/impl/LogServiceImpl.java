@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import site.minnan.entry.application.service.LogService;
@@ -18,6 +19,7 @@ import site.minnan.entry.userinterface.dto.log.GetLogListDTO;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +27,10 @@ public class LogServiceImpl implements LogService {
 
     @Autowired
     private LogMapper logMapper;
+
+    @Autowired
+    @Qualifier("BlankFilter")
+    private Function<String, Optional<String>> blankFilter;
 
     /**
      * 记录日志
@@ -55,8 +61,8 @@ public class LogServiceImpl implements LogService {
     @Override
     public ListQueryVO<LogVO> getLogList(GetLogListDTO dto) {
         QueryWrapper<Log> queryWrapper = new QueryWrapper<>();
-        Optional.ofNullable(dto.getUsername()).ifPresent(s -> queryWrapper.like("username", s));
-        Optional.ofNullable(dto.getOperation()).ifPresent(s -> queryWrapper.eq("operation", s));
+        blankFilter.apply(dto.getUsername()).ifPresent(s -> queryWrapper.like("username", s));
+        blankFilter.apply(dto.getOperation()).ifPresent(s -> queryWrapper.eq("operation", s));
         queryWrapper.orderByDesc("time");
         Page<Log> queryPage = new Page<>(dto.getPageIndex(), dto.getPageSize());
         IPage<Log> page = logMapper.selectPage(queryPage, queryWrapper);

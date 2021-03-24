@@ -11,10 +11,9 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import site.minnan.entry.application.service.AuthService;
 import site.minnan.entry.domain.vo.auth.LoginVO;
 import site.minnan.entry.infrastructure.annocation.OperateLog;
@@ -22,6 +21,8 @@ import site.minnan.entry.infrastructure.enumerate.Operation;
 import site.minnan.entry.userinterface.dto.auth.PasswordLoginDTO;
 import site.minnan.entry.userinterface.response.ResponseEntity;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @Api(tags = "权限")

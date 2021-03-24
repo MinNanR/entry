@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.method.HandlerMethod;
+import site.minnan.entry.domain.vo.LackParamMessage;
 import site.minnan.entry.userinterface.response.ResponseCode;
 import site.minnan.entry.userinterface.response.ResponseEntity;
 
@@ -54,15 +55,14 @@ public class ControllerExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
-    public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<List<LackParamMessage>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         log.error(StrUtil.format("Parameter Error,execute in : {},target : {}", ex.getParameter().getExecutable(),
                 ex.getBindingResult().getTarget()), ex);
-        List<Map<Object, Object>> details = ex.getBindingResult().getAllErrors().stream()
+        List<LackParamMessage> details = ex.getBindingResult().getAllErrors().stream()
                 .map(error -> (FieldError) error)
-                .map(error -> MapBuilder.create().put("field", error.getField()).put("message",
-                        error.getDefaultMessage()).build())
+                .map(error -> new LackParamMessage(error.getField(), error.getDefaultMessage()))
                 .collect(Collectors.toList());
-        return ResponseEntity.fail(ResponseCode.INVALID_PARAM, MapBuilder.create().put("details", details).build());
+        return ResponseEntity.fail(ResponseCode.INVALID_PARAM, details);
     }
 
     /**

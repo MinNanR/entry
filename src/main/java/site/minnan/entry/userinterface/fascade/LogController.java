@@ -1,6 +1,7 @@
 package site.minnan.entry.userinterface.fascade;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +24,7 @@ public class LogController {
     @Autowired
     private LogService logService;
 
+    @ApiOperation("获取日志列表")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping("getLogList")
     public ResponseEntity<ListQueryVO<LogVO>> getLogList(@RequestBody @Valid GetLogListDTO dto){

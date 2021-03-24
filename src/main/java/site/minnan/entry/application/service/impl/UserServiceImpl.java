@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +30,7 @@ import site.minnan.entry.userinterface.dto.user.UpdateUserDTO;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,6 +50,10 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RedisUtil redisUtil;
+
+    @Autowired
+    @Qualifier("BlankFilter")
+    private Function<String, Optional<String>> blankFilter;
 
     /**
      * 添加用户
@@ -90,8 +96,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public ListQueryVO<UserVO> getUserList(GetUserListDTO dto) {
         QueryWrapper<AuthUser> queryWrapper = new QueryWrapper<>();
-        Optional.ofNullable(dto.getUsername()).ifPresent(s -> queryWrapper.like("username", s));
-        Optional.ofNullable(dto.getRole()).ifPresent(s -> queryWrapper.eq("role", s));
+        blankFilter.apply(dto.getUsername()).ifPresent(s -> queryWrapper.like("username", s));
+        blankFilter.apply(dto.getRole()).ifPresent(s -> queryWrapper.eq("role", s));
         queryWrapper.orderByDesc("update_time");
         Page<AuthUser> queryPage = new Page<>(dto.getPageIndex(), dto.getPageSize());
         IPage<AuthUser> page = authUserMapper.selectPage(queryPage, queryWrapper);
@@ -130,12 +136,12 @@ public class UserServiceImpl implements UserService {
     public void updateUserInfo(UpdateUserDTO dto) {
         JwtUser jwtUser = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         AuthUser authUser = authUserMapper.selectById(jwtUser.getId());
-        Optional.ofNullable(dto.getNewPassword()).ifPresent(s -> {
+        blankFilter.apply(dto.getNewPassword()).ifPresent(s -> {
             String encodedPassword = encoder.encode(dto.getNewPassword());
             String stamp = UUID.randomUUID().toString().replaceAll("-", "");
             authUser.updatePassword(encodedPassword, stamp);
         });
-        Optional.ofNullable(dto.getRealName()).ifPresent(authUser::setRealName);
+        blankFilter.apply(dto.getRealName()).ifPresent(authUser::setRealName);
         authUser.setUpdateUser(jwtUser);
         redisUtil.delete("authUser::" + authUser.getUsername());
         authUserMapper.updateById(authUser);
