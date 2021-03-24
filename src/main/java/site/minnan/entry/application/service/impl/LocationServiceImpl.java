@@ -18,6 +18,7 @@ import site.minnan.entry.domain.vo.location.LocationVO;
 import site.minnan.entry.infrastructure.enumerate.LocationType;
 import site.minnan.entry.infrastructure.enumerate.Role;
 import site.minnan.entry.infrastructure.exception.EntityNotExistException;
+import site.minnan.entry.infrastructure.exception.UnmodifiableException;
 import site.minnan.entry.userinterface.dto.location.AddLocationDTO;
 import site.minnan.entry.userinterface.dto.location.GetLocationDropDownDTO;
 import site.minnan.entry.userinterface.dto.location.GetLocationListDTO;
@@ -106,5 +107,33 @@ public class LocationServiceImpl implements LocationService {
         blankFilter.apply(dto.getCity()).ifPresent(s -> queryWrapper.eq("city", s));
         List<Location> list = locationMapper.selectList(queryWrapper);
         return list.stream().map(e -> new DropDownBox(e.getId().toString(), e.getName())).collect(Collectors.toList());
+    }
+
+    /**
+     * 删除位置
+     *
+     * @param locationId
+     */
+    @Override
+    public void deleteLocation(Integer locationId) {
+        Location location = locationMapper.selectById(locationId);
+        if (location == null) {
+            throw new EntityNotExistException("位置不存在");
+        }
+        Integer check = null;
+        switch (location.getType()){
+            case PORT:{
+                check = locationMapper.checkPortUsed(locationId);
+                break;
+            }
+            case HOTEL:{
+                check = locationMapper.checkHotelUsed(locationId);
+                break;
+            }
+        }
+        if (check != null) {
+            throw new UnmodifiableException("当前位置不可删除");
+        }
+        locationMapper.deleteById(locationId);
     }
 }

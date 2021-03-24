@@ -1,5 +1,6 @@
 package site.minnan.entry.infrastructure.exception;
 
+import cn.hutool.core.lang.Console;
 import cn.hutool.core.map.MapBuilder;
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,8 @@ import site.minnan.entry.domain.vo.LackParamMessage;
 import site.minnan.entry.userinterface.response.ResponseCode;
 import site.minnan.entry.userinterface.response.ResponseEntity;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -101,10 +104,11 @@ public class ControllerExceptionHandler {
      */
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseBody
-    public ResponseEntity<?> handleAccessDeniedException(AccessDeniedException ex, HandlerMethod method) {
+    public void handleAccessDeniedException(AccessDeniedException ex, HandlerMethod method,
+                                            HttpServletResponse response) throws IOException {
         String uri = method.getMethod().getAnnotation(PostMapping.class).value()[0];
         log.error("无权限访问:" + uri, ex);
-        return ResponseEntity.invalid("无权限访问");
+        response.sendError(HttpServletResponse.SC_FORBIDDEN, "禁止访问");
     }
 
     @ExceptionHandler(UnmodifiableException.class)
@@ -126,11 +130,5 @@ public class ControllerExceptionHandler {
     public ResponseEntity<?> handleUnknownException(Exception ex) {
         log.error("unknown error", ex);
         return ResponseEntity.fail(ResponseCode.UNKNOWN_ERROR);
-    }
-
-    public static void main(String[] args) {
-        BigDecimal z =BigDecimal.ZERO;
-        BigDecimal plus = z.plus();
-        System.out.println(plus);
     }
 }

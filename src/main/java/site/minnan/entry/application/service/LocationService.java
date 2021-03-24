@@ -45,4 +45,10 @@ public interface LocationService {
      * @return
      */
     List<DropDownBox> getDropDownBox(GetLocationDropDownDTO type);
+
+    /**
+     * 删除位置
+     * @param locationId
+     */
+    void deleteLocation(Integer locationId);
 }

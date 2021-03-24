@@ -2,12 +2,10 @@ package site.minnan.entry.userinterface.fascade;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import site.minnan.entry.application.service.LocationService;
 import site.minnan.entry.domain.vo.DropDownBox;
 import site.minnan.entry.domain.vo.ListQueryVO;
@@ -21,6 +19,7 @@ import site.minnan.entry.userinterface.dto.location.UpdateLocationDTO;
 import site.minnan.entry.userinterface.response.ResponseEntity;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Api(tags = "位置")
@@ -63,5 +62,14 @@ public class LocationController {
     public ResponseEntity<List<DropDownBox>> getLocationDropDown(@RequestBody GetLocationDropDownDTO dto) {
         List<DropDownBox> dropDownBox = locationService.getDropDownBox(dto);
         return ResponseEntity.success(dropDownBox);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @ApiOperation("删除口岸")
+    @PostMapping("deleteLocation/{id}")
+    public ResponseEntity<?> deleteLocation(@ApiParam(value = "位置id", required = true, example = "1") @Valid @PathVariable("id") @NotNull(message =
+            "未指定删除的口岸") Integer locationId) {
+        locationService.deleteLocation(locationId);
+        return ResponseEntity.success();
     }
 }

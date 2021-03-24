@@ -283,8 +283,8 @@ public class TravelerServiceImpl implements TravelerService {
         List<Traveler> travelerList = travelerMapper.selectList(queryWrapper);
         Map<String, List<Traveler>> groupByNationality = travelerList.stream()
                 .collect(Collectors.groupingBy(Traveler::getNationality));
-        AreaData nationalityData = new AreaData();
-        groupByNationality.forEach((key, value) -> nationalityData.add(key, value.size()));
+        Map<String, Integer> nationalityData = new HashMap<>();
+        groupByNationality.forEach((key, value) -> nationalityData.put(key, value.size()));
         List<Traveler> chineseList = groupByNationality.get("中国");
         AreaData provinceData = new AreaData();
         chineseList.stream()
@@ -294,7 +294,7 @@ public class TravelerServiceImpl implements TravelerService {
                         ((Map.Entry<String, List<Traveler>>) entry).getValue().size()).reversed())
                 .limit(7)
                 .forEach(entry -> provinceData.add(entry.getKey(), entry.getValue().size()));
-        return new NationalityStatics(nationalityData, provinceData);
+        return new NationalityStatics(travelerList.size(), nationalityData, provinceData);
     }
 
     /**
@@ -305,7 +305,7 @@ public class TravelerServiceImpl implements TravelerService {
     @Override
     public int getAcceptedTravelerCount() {
         QueryWrapper<Traveler> queryWrapper = new QueryWrapper<>();
-        queryWrapper.in("status", TravelerStatus.NOT_QUARANTINE,TravelerStatus.QUARANTINE, TravelerStatus.RELEASED);
+        queryWrapper.in("status", TravelerStatus.NOT_QUARANTINE, TravelerStatus.QUARANTINE, TravelerStatus.RELEASED);
         return travelerMapper.selectCount(queryWrapper);
     }
 }

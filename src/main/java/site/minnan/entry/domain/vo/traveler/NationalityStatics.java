@@ -5,13 +5,18 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.Map;
+
 @ApiModel("地区统计")
 @Data
 @AllArgsConstructor
 public class NationalityStatics {
 
+    @ApiModelProperty("人数总数")
+    private Integer totalCount;
+
     @ApiModelProperty("国籍统计")
-    private AreaData nationalityData;
+    private Map<String, Integer> nationalityData;
 
     @ApiModelProperty("省份统计")
     private AreaData provinceData;
