@@ -136,7 +136,8 @@ Authorization: {{admin_token}}
   "name": "王大炮",
   "nationality": "中国",
   "portId": 4,
-  "portName": "横琴口岸"
+  "portName": "横琴口岸",
+  "province": "广东"
 }
 
 ###
@@ -340,6 +341,13 @@ Authorization: {{admin_token}}
 
 ###
 POST {{baseUrl}}/traveler/getNumberTrend
+Content-Type: application/json
+Authorization: {{admin_token}}
+
+{}
+
+###
+POST {{baseUrl}}/traveler/getNationalityStatistics
 Content-Type: application/json
 Authorization: {{admin_token}}
 

@@ -33,6 +33,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@SuppressWarnings("all")
 public class TravelerServiceImpl implements TravelerService {
 
     @Autowired
@@ -271,6 +272,34 @@ public class TravelerServiceImpl implements TravelerService {
      */
     @Override
     public NationalityStatics getNationalityStatics() {
-        return null;
+        QueryWrapper<Traveler> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id", "nationality", "province");
+        List<Traveler> travelerList = travelerMapper.selectList(queryWrapper);
+        Map<String, List<Traveler>> groupByNationality = travelerList.stream()
+                .collect(Collectors.groupingBy(Traveler::getNationality));
+        AreaData nationalityData = new AreaData();
+        groupByNationality.forEach((key, value) -> nationalityData.add(key, value.size()));
+        List<Traveler> chineseList = groupByNationality.get("中国");
+        AreaData provinceData = new AreaData();
+        chineseList.stream()
+                .collect(Collectors.groupingBy(Traveler::getProvince))
+                .entrySet().stream()
+                .sorted(Comparator.comparingInt(entry ->
+                        ((Map.Entry<String, List<Traveler>>) entry).getValue().size()).reversed())
+                .limit(7)
+                .forEach(entry -> provinceData.add(entry.getKey(), entry.getValue().size()));
+        return new NationalityStatics(nationalityData, provinceData);
+    }
+
+    /**
+     * 获取已接受的旅客数量
+     *
+     * @return
+     */
+    @Override
+    public int getAcceptedTravelerCount() {
+        QueryWrapper<Traveler> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("status", TravelerStatus.NOT_QUARANTINE,TravelerStatus.QUARANTINE, TravelerStatus.RELEASED);
+        return travelerMapper.selectCount(queryWrapper);
     }
 }

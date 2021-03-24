@@ -1,8 +1,6 @@
 package site.minnan.entry.userinterface.fascade;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -115,15 +113,16 @@ public class TravelerController {
     @PreAuthorize("hasAnyAuthority('ADMIN','PORT_USER','HOTEL_USER')")
     @ApiOperation("人员国籍归属分析")
     @PostMapping("getNationalityStatistics")
-    public ResponseEntity<NationalityStatistics> getNationalityStatistics() {
-        return ResponseEntity.success(null);
+    public ResponseEntity<NationalityStatics> getNationalityStatistics() {
+        NationalityStatics vo = travelerService.getNationalityStatics();
+        return ResponseEntity.success(vo);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN','PORT_USER','HOTEL_USER')")
     @ApiOperation("旅客个人档案")
     @PostMapping("getPersonalArchive/{id}")
     public ResponseEntity<TravelerArchive> getPersonalArchive(@ApiParam(value = "旅客id", required = true, example = "1") @Valid @PathVariable("id")
-                                                              @NotNull(message = "未指定结束隔离的旅客") Integer travelerId) {
+                                                              @NotNull(message = "未指定查询的旅客") Integer travelerId) {
         TravelerArchive travelerArchive = travelerService.getTravelerArchive(travelerId);
         return ResponseEntity.success(travelerArchive);
     }
@@ -134,5 +133,13 @@ public class TravelerController {
     public ResponseEntity<NumberTrendData> getNumberTrend(){
         NumberTrendData vo = travelerService.getNumberTrend();
         return ResponseEntity.success(vo);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN','PORT_USER','HOTEL_USER')")
+    @ApiOperation("获取已接受的旅客数量")
+    @PostMapping("getAcceptedTravelerCount")
+    public ResponseEntity<Integer> getAcceptedTravelerCount(){
+        int count = travelerService.getAcceptedTravelerCount();
+        return ResponseEntity.success(count);
     }
 }

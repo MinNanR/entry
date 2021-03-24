@@ -106,4 +106,10 @@ public interface TravelerService {
      * @return
      */
     NationalityStatics getNationalityStatics();
+
+    /**
+     * 获取已接受的旅客数量
+     * @return
+     */
+    int getAcceptedTravelerCount();
 }

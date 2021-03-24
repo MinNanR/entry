@@ -22,8 +22,8 @@ public class AreaData {
         numberList = new ArrayList<>();
     }
 
-    public void add(String nationality, Integer number){
-        areaList.add(nationality);
+    public void add(String area, Integer number){
+        areaList.add(area);
         numberList.add(number);
     }
 }
