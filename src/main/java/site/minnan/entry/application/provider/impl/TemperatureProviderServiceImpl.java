@@ -39,16 +39,17 @@ public class TemperatureProviderServiceImpl implements TemperatureProviderServic
         travelerQueryWrapper.eq("status", TravelerStatus.QUARANTINE);
         List<Traveler> travelerList = travelerMapper.selectList(travelerQueryWrapper);//筛选出正在隔离的旅客
         Map<Integer, Traveler> idTravelerMap = travelerList.stream().collect(Collectors.toMap(Traveler::getId, e -> e));
-        List<TemperatureRecord> todayRecord = temperatureRecordMapper.getTodayRecord();
-        List<Integer> travelerHasRecord = todayRecord.stream().map(TemperatureRecord::getTravelerId).collect(Collectors.toList());
-        travelerHasRecord.forEach(idTravelerMap::remove);
+        List<TemperatureRecord> todayRecord = temperatureRecordMapper.getTodayRecord();//获取已有记录的旅客
+        List<Integer> travelerHasRecord =
+                todayRecord.stream().map(TemperatureRecord::getTravelerId).collect(Collectors.toList());
+        travelerHasRecord.forEach(idTravelerMap::remove);//去除已经有记录的旅客
         Collection<Traveler> travelers = idTravelerMap.values();
         if (CollectionUtil.isNotEmpty(travelers)) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             JwtUser user;
-            if(authentication != null){
+            if (authentication != null) {
                 user = (JwtUser) authentication.getPrincipal();
-            }else{
+            } else {
                 user = JwtUser.builder().id(0).realName("系统").build();
             }
             List<TemperatureRecord> recordList = travelers.stream()
