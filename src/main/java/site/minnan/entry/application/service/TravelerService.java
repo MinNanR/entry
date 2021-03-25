@@ -2,7 +2,6 @@ package site.minnan.entry.application.service;
 
 import site.minnan.entry.domain.vo.ListQueryVO;
 import site.minnan.entry.domain.vo.traveler.*;
-import site.minnan.entry.userinterface.dto.ListQueryDTO;
 import site.minnan.entry.userinterface.dto.traveler.*;
 
 /**
@@ -67,10 +66,10 @@ public interface TravelerService {
     /**
      * 获取未开始隔离的旅客列表
      *
-     * @param dto
+     * @param hotelId
      * @return
      */
-    ListQueryVO<TravelerVO> getNotQuarantineTravelerList(ListQueryDTO dto);
+    ListQueryVO<TravelerVO> getNotQuarantineTravelerList(Integer hotelId);
 
     /**
      * 开始隔离
@@ -112,4 +111,11 @@ public interface TravelerService {
      * @return
      */
     int getAcceptedTravelerCount();
+
+    /**
+     * 获取正在隔离的旅客（隔离时间超过14天）
+     * @param dto
+     * @return
+     */
+    ListQueryVO<TravelerVO> getQuarantineTravelerList(GetQuarantineTravelerListDTO dto);
 }

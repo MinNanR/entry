@@ -9,6 +9,7 @@ import site.minnan.entry.domain.vo.traveler.HotelData;
 import site.minnan.entry.userinterface.dto.traveler.GetHotelDataDTO;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 @Mapper

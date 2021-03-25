@@ -10,7 +10,7 @@ import site.minnan.entry.userinterface.dto.ListQueryDTO;
  */
 @ApiModel("获取即将抵达的车次列表")
 @Data
-public class GetNotArrivedTrainListDTO extends ListQueryDTO {
+public class GetNotArrivedTrainListDTO {
 
     @ApiModelProperty(value = "酒店id",example = "2")
     private Integer hotelId;

@@ -158,8 +158,7 @@ public class TrainServiceImpl implements TrainService {
         blankFilter.apply(dto.getCarNumber()).ifPresent(s -> queryWrapper.like("car_number", s));
         queryWrapper.eq("status", TrainStatus.DEPARTED);
         Integer totalCount = trainMapper.selectCount(queryWrapper);
-        List<TrainData> trainList = totalCount > 0 ?
-                trainMapper.getNotArrivedTrainList(dto.getCarNumber(), dto.getHotelId(), dto.getStart(), dto.getPageSize())
+        List<TrainData> trainList = totalCount > 0 ? trainMapper.getNotArrivedTrainList(dto.getCarNumber(),dto.getHotelId())
                 : ListUtil.empty();
         List<ArrivingTrainVO> list = trainList.stream().map(ArrivingTrainVO::assemble).collect(Collectors.toList());
         return new ListQueryVO<>(list, totalCount);

@@ -26,7 +26,6 @@ import site.minnan.entry.infrastructure.enumerate.Gender;
 import site.minnan.entry.infrastructure.enumerate.TravelerStatus;
 import site.minnan.entry.infrastructure.exception.EntityNotExistException;
 import site.minnan.entry.infrastructure.exception.UnmodifiableException;
-import site.minnan.entry.userinterface.dto.ListQueryDTO;
 import site.minnan.entry.userinterface.dto.traveler.*;
 
 import java.sql.Timestamp;
@@ -139,10 +138,9 @@ public class TravelerServiceImpl implements TravelerService {
                 .eq("status", TravelerStatus.ENTRY)
                 .orderByDesc("update_time");
         blankFilter.apply(dto.getName()).ifPresent(s -> queryWrapper.like("name", s));
-        Page<Traveler> queryPage = new Page<>(dto.getPageIndex(), dto.getPageSize());
-        IPage<Traveler> page = travelerMapper.selectPage(queryPage, queryWrapper);
-        List<TravelerVO> list = page.getRecords().stream().map(TravelerVO::toDropDown).collect(Collectors.toList());
-        return new ListQueryVO<>(list, page.getTotal());
+        List<Traveler> travelerList = travelerMapper.selectList(queryWrapper);
+        List<TravelerVO> list = travelerList.stream().map(TravelerVO::toDropDown).collect(Collectors.toList());
+        return new ListQueryVO<>(list, null);
     }
 
     /**
@@ -186,13 +184,13 @@ public class TravelerServiceImpl implements TravelerService {
      * @return
      */
     @Override
-    public ListQueryVO<TravelerVO> getNotQuarantineTravelerList(ListQueryDTO dto) {
+    public ListQueryVO<TravelerVO> getNotQuarantineTravelerList(Integer hotelId) {
         QueryWrapper<Traveler> queryWrapper = new QueryWrapper<>();
-        queryWrapper.in("status", TravelerStatus.NOT_QUARANTINE);
-        Page<Traveler> queryPage = new Page<>(dto.getPageIndex(), dto.getPageSize());
-        IPage<Traveler> page = travelerMapper.selectPage(queryPage, queryWrapper);
-        List<TravelerVO> list = page.getRecords().stream().map(TravelerVO::assemble).collect(Collectors.toList());
-        return new ListQueryVO<>(list, page.getTotal());
+        queryWrapper.eq("status", TravelerStatus.NOT_QUARANTINE)
+                .eq("hote_id", hotelId);
+        List<Traveler> travelerList = travelerMapper.selectList(queryWrapper);
+        List<TravelerVO> list = travelerList.stream().map(TravelerVO::assemble).collect(Collectors.toList());
+        return new ListQueryVO<>(list, null);
     }
 
     /**
@@ -307,5 +305,24 @@ public class TravelerServiceImpl implements TravelerService {
         QueryWrapper<Traveler> queryWrapper = new QueryWrapper<>();
         queryWrapper.in("status", TravelerStatus.NOT_QUARANTINE, TravelerStatus.QUARANTINE, TravelerStatus.RELEASED);
         return travelerMapper.selectCount(queryWrapper);
+    }
+
+    /**
+     * 获取正在隔离的旅客（隔离时间超过14天）
+     *
+     * @param dto
+     * @return
+     */
+    @Override
+    public ListQueryVO<TravelerVO> getQuarantineTravelerList(GetQuarantineTravelerListDTO dto) {
+        QueryWrapper<Traveler> queryWrapper = new QueryWrapper<>();
+        Optional.ofNullable(dto.getHotelId()).ifPresent(s -> queryWrapper.eq("hote_id", s));
+        blankFilter.apply(dto.getName()).ifPresent(s -> queryWrapper.like("name", s));
+        queryWrapper.eq("status", TravelerStatus.QUARANTINE)
+                .ge("datediff(now(), quarantine_start_time)", 14);
+        Page<Traveler> queryPage = new Page<>(dto.getPageIndex(), dto.getPageSize());
+        IPage<Traveler> page = travelerMapper.selectPage(queryPage, queryWrapper);
+        List<TravelerVO> list = page.getRecords().stream().map(TravelerVO::assemble).collect(Collectors.toList());
+        return new ListQueryVO<>(list, page.getTotal());
     }
 }

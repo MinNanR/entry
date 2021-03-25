@@ -20,8 +20,7 @@ public interface TrainMapper extends BaseMapper<Train> {
     List<TrainData> getTrainList(@Param("carNumber") String carNumber, @Param("start") Integer start, @Param(
             "pageSize") Integer pageSize);
 
-    List<TrainData> getNotArrivedTrainList(@Param("carNumber") String carNumber, @Param("hotelId") Integer hotelId,
-                                           @Param("start") Integer start, @Param("pageSize") Integer pageSize);
+    List<TrainData> getNotArrivedTrainList(@Param("carNumber") String carNumber, @Param("hotelId") Integer hotelId);
 
     List<TrainData> getArrivedTrainList(GetTrainListDTO param);
 }

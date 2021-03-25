@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import site.minnan.entry.application.service.TravelerService;
+import site.minnan.entry.domain.aggregate.Traveler;
 import site.minnan.entry.domain.vo.ListQueryVO;
 import site.minnan.entry.domain.vo.traveler.*;
 import site.minnan.entry.infrastructure.annocation.OperateLog;
@@ -77,9 +78,10 @@ public class TravelerController {
 
     @PreAuthorize("hasAnyAuthority('ADMIN','HOTEL_USER')")
     @ApiOperation("查询未开始隔离的旅客")
-    @PostMapping("getNotQuarantineTravelerList")
-    public ResponseEntity<ListQueryVO<TravelerVO>> getNotQuarantineTravelerList(@RequestBody @Valid ListQueryDTO dto){
-        ListQueryVO<TravelerVO> vo = travelerService.getNotQuarantineTravelerList(dto);
+    @PostMapping("getNotQuarantineTravelerList/{hotelId}")
+    public ResponseEntity<ListQueryVO<TravelerVO>> getNotQuarantineTravelerList(@ApiParam(value = "酒店id", required =
+            true, example = "1") @Valid @PathVariable("hotelId") Integer hotelId){
+        ListQueryVO<TravelerVO> vo = travelerService.getNotQuarantineTravelerList(hotelId);
         return ResponseEntity.success(vo);
     }
 
@@ -141,5 +143,13 @@ public class TravelerController {
     public ResponseEntity<Integer> getAcceptedTravelerCount(){
         int count = travelerService.getAcceptedTravelerCount();
         return ResponseEntity.success(count);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN','HOTEL_USER')")
+    @ApiOperation("获取正在隔离且隔离时间大于14天的旅客")
+    @PostMapping("getQuarantineTravelerList")
+    public ResponseEntity<ListQueryVO<TravelerVO>> getQuarantineTravelerList(@RequestBody @Valid GetQuarantineTravelerListDTO dto){
+        ListQueryVO<TravelerVO> vo = travelerService.getQuarantineTravelerList(dto);
+        return ResponseEntity.success(vo);
     }
 }

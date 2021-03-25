@@ -37,7 +37,6 @@
             and t1.hotel_id = #{hotelId}
         </if>
         order by t1.update_time desc
-        limit #{start},#{pageSize}
     </select>
     <!--获取已到达的车次-->
     <select id="getArrivedTrainList" resultType="site.minnan.entry.domain.entity.TrainData">

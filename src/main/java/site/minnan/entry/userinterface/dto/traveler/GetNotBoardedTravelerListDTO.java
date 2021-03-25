@@ -7,7 +7,7 @@ import site.minnan.entry.userinterface.dto.ListQueryDTO;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class GetNotBoardedTravelerListDTO extends ListQueryDTO {
+public class GetNotBoardedTravelerListDTO {
 
     @ApiModelProperty(value = "口岸id", required = true, example = "1")
     @NotNull(message = "未指定口岸")
