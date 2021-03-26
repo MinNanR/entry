@@ -64,6 +64,7 @@ public class CommonController {
         return ResponseEntity.success(dropDownBoxList);
     }
 
+    @ApiOperation("日志操作类型下拉框")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping("getLogOperation")
     public ResponseEntity<ListQueryVO<Map<Object, Object>>> getLogOperation() {

@@ -258,8 +258,11 @@ Content-Type: application/json
 Authorization: {{admin_token}}
 
 {
+  "pageSize": 10,
+  "carNumber": "",
   "pageIndex": 1,
-  "pageSize": 10
+  "startTime": "2021-03-18",
+  "endTime": "2021-03-25"
 }
 
 ###
@@ -335,7 +338,7 @@ Content-Type: application/json
 Authorization: {{admin_token}}
 
 {
-  "hotelId": 2
+  "hotelId": 3
 }
 
 ###

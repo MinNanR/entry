@@ -59,6 +59,9 @@ public class TravelerVO {
             "ARRIVE-已抵达酒店,QUARANTINE-隔离中,RELEASED-已解除隔离")
     private String statusCode;
 
+    @ApiModelProperty(value = "隔离开始时间", example = "2021-03-26")
+    private String quarantineStartTime;
+
     public static TravelerVO assemble(Traveler traveler) {
         TravelerVOBuilder builder = builder()
                 .id(traveler.getId())
@@ -75,6 +78,7 @@ public class TravelerVO {
         Optional.ofNullable(traveler.getBoardingTime()).ifPresent(s -> builder.boardingTime(DateUtil.format(s, "yyyy" +
                 "-MM-dd HH:mm")));
         Optional.ofNullable(traveler.getArrivalTime()).ifPresent(s -> builder.hotelName(traveler.getHotelName()));
+        Optional.ofNullable(traveler.getQuarantineStartTime()).ifPresent(s -> builder.quarantineStartTime(DateUtil.format(s, "yyyy-MM-dd")));
         return builder.build();
     }
 

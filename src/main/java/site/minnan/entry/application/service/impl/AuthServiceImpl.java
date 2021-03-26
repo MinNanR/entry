@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +19,7 @@ import site.minnan.entry.domain.vo.auth.LoginVO;
 import site.minnan.entry.infrastructure.utils.JwtUtil;
 import site.minnan.entry.infrastructure.utils.RedisUtil;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
 import java.util.Optional;
 
@@ -36,6 +38,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Value("${jwt.header}")
+    private String authenticationHeader;
 
     /**
      * Locates the user based on the username. In the actual implementation, the search
@@ -85,5 +90,18 @@ public class AuthServiceImpl implements AuthService {
         Optional<AuthUser> userOptional = Optional.ofNullable(userInDB);
         userOptional.ifPresent(user -> redisUtil.setValue("authUser::" + username, user, Duration.ofMinutes(30)));
         return userOptional;
+    }
+
+    /**
+     * 将登录信息注入session
+     *
+     * @param authentication
+     * @param request
+     */
+    @Override
+    public void setToken(Authentication authentication, HttpServletRequest request) {
+        JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
+        String token = "Bearer " + jwtUtil.generateToken(jwtUser);
+        request.getSession().setAttribute(authenticationHeader, token);
     }
 }

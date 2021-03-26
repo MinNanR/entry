@@ -17,7 +17,7 @@ server:
 jwt:
   route:
     authentication:
-      path: /entry/auth/login*/**, /swagger*/**, /webjars/**, /v2/**
+      path: /entry/auth/login*/**, /swagger*/**, /webjars/**, /v2/**, /login.html
   header: Authorization
   expiration: 604800
   scret: jilin#

@@ -23,5 +23,11 @@ public interface TravelerMapper extends BaseMapper<Traveler> {
      */
     void travelerArrive(@Param("travelers") Collection<Traveler> travelers);
 
+    /**
+     * 酒店数据面板
+     *
+     * @param dto
+     * @return
+     */
     HotelData getHotelData(GetHotelDataDTO dto);
 }

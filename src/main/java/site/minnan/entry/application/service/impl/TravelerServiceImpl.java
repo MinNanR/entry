@@ -186,8 +186,8 @@ public class TravelerServiceImpl implements TravelerService {
     @Override
     public ListQueryVO<TravelerVO> getNotQuarantineTravelerList(Integer hotelId) {
         QueryWrapper<Traveler> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("status", TravelerStatus.NOT_QUARANTINE)
-                .eq("hote_id", hotelId);
+        queryWrapper.eq("status", TravelerStatus.NOT_QUARANTINE);
+        Optional.ofNullable(hotelId).ifPresent(s -> queryWrapper.eq("hotel_id", s));
         List<Traveler> travelerList = travelerMapper.selectList(queryWrapper);
         List<TravelerVO> list = travelerList.stream().map(TravelerVO::assemble).collect(Collectors.toList());
         return new ListQueryVO<>(list, null);

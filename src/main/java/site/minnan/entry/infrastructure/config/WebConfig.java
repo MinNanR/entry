@@ -8,6 +8,8 @@ import org.springframework.util.unit.DataUnit;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.MultipartConfigElement;
@@ -41,11 +43,16 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public MultipartConfigElement multipartConfigElement(){
+    public MultipartConfigElement multipartConfigElement() {
         MultipartConfigFactory factory = new MultipartConfigFactory();
         factory.setMaxFileSize(DataSize.of(100, DataUnit.MEGABYTES));
         factory.setMaxRequestSize(DataSize.of(100, DataUnit.MEGABYTES));
         return factory.createMultipartConfig();
+    }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/login.html").setViewName("login");
     }
 }
 

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<style>
+    .loginDiv{
+        text-align: center;
+    }
+</style>
+<body>
+<div class="loginDiv" style="margin-top: 10rem">
+    <div>
+        <h3>请登陆</h3>
+    </div>
+    <form action="/entry/auth/login/swagger" method="post">
+        <div class="form-group">
+            <label for="username" style="display:inline;">账户：</label>
+            <input
+                    id="username"
+                    name="username"
+                    type="text"
+                    class="form-control"
+                    style="display:inline;width:200px;"
+                    autocomplete="off"
+            />
+        </div>
+        <div class="form-group">
+            <label for="password" style="display:inline;">密码：</label>
+            <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    class="form-control"
+                    style="display:inline;width:200px;"
+                    autocomplete="off"
+            />
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-right: 20px">登录</button>
+    </form>
+</div>
+</body>
+</html>

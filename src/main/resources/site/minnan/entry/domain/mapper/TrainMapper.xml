@@ -55,7 +55,7 @@
             and t1.hotel_id = #{hotelId}
         </if>
         <if test="startTime != null and startTime != '' and endTime != null and endTime != ''">
-            and t1.arrive_time between #{startTime} and #{parm.endTime}
+            and t1.arrive_time between #{startTime} and #{endTime}
         </if>
         order by t1.update_time desc
         limit #{start},#{pageSize}

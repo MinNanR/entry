@@ -41,7 +41,11 @@ public class ControllerLog {
     private void controllerLog() {
     }
 
-    @Around("controllerLog()")
+    @Pointcut("execution(public * site.minnan.entry.userinterface.fascade.AuthController.swaggerLogin(..))")
+    private void swaggerLogin() {
+    }
+
+    @Around("controllerLog() && !swaggerLogin()")
     public Object logAroundController(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         long time = System.currentTimeMillis();
         Object[] args = proceedingJoinPoint.getArgs();

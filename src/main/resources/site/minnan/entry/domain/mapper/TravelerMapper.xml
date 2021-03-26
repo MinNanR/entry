@@ -16,15 +16,21 @@
     <select id="getHotelData" resultType="site.minnan.entry.domain.vo.traveler.HotelData">
         select
         (select count(1) from entry_traveler
-        where hotel_id = #{hotelId} and status = 'TRANSPORTING'
+        where status = 'TRANSPORTING'
         <if test="startTime != null and startTime != '' and endTime != null and endTime != ''">
             and entry_time between #{startTime} and #{endTime}
+        </if>
+        <if test="hotelId != null">
+            and hotel_id = #{hotelId}
         </if>)
         as arriving,
         (select count(1) from entry_traveler
-        where hotel_id = #{hotelId} and (status = 'NOT_QUARANTINE' or status =  'QUARANTINE')
+        where (status = 'NOT_QUARANTINE' or status =  'QUARANTINE')
         <if test="startTime != null and startTime != '' and endTime != null and endTime != ''">
             and entry_time between #{startTime} and #{endTime}
+        </if>
+        <if test="hotelId != null">
+            and hotel_id = #{hotelId}
         </if>)
         as peopleInHotel
     </select>

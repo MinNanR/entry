@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class GetHotelDataDTO {
 
-    @ApiModelProperty(value = "酒店id", required = true, example = "1")
+    @ApiModelProperty(value = "酒店id", example = "1")
     private Integer hotelId;
 
     @ApiModelProperty(value = "入境开始时间（yyyy-MM-dd HH:mm）", example = "2021-03-20 09:00")
