@@ -19,7 +19,9 @@ import site.minnan.entry.domain.vo.auth.LoginVO;
 import site.minnan.entry.infrastructure.utils.JwtUtil;
 import site.minnan.entry.infrastructure.utils.RedisUtil;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.time.Duration;
 import java.util.Optional;
 
@@ -97,11 +99,15 @@ public class AuthServiceImpl implements AuthService {
      *
      * @param authentication
      * @param request
+     * @param response
      */
     @Override
-    public void setToken(Authentication authentication, HttpServletRequest request) {
+    public void setToken(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
         JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
-        String token = "Bearer " + jwtUtil.generateToken(jwtUser);
-        request.getSession().setAttribute(authenticationHeader, token);
+        String token = jwtUtil.generateToken(jwtUser);
+        Cookie cookie = new Cookie(authenticationHeader, token);
+        cookie.setMaxAge(60 * 60 * 24);
+        cookie.setPath("/");
+        response.addCookie(cookie);
     }
 }

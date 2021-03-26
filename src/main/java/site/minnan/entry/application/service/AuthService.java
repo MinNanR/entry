@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import site.minnan.entry.domain.vo.auth.LoginVO;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 权限相关服务
@@ -23,9 +24,9 @@ public interface AuthService extends UserDetailsService {
 
     /**
      * 将登录信息注入session
-     *
-     * @param authentication
+     *  @param authentication
      * @param res
+     * @param response
      */
-    void setToken(Authentication authentication, HttpServletRequest res);
+    void setToken(Authentication authentication, HttpServletRequest res, HttpServletResponse response);
 }

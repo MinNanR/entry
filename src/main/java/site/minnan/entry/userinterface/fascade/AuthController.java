@@ -14,7 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 import site.minnan.entry.application.service.AuthService;
 import site.minnan.entry.domain.vo.auth.LoginVO;
 import site.minnan.entry.infrastructure.annocation.OperateLog;
@@ -66,7 +65,7 @@ public class AuthController {
      * @return
      */
     @PostMapping("/login/swagger")
-    public String swaggerLogin(@Valid PasswordLoginDTO dto, HttpServletRequest request) {
+    public String swaggerLogin(@Valid PasswordLoginDTO dto, HttpServletRequest request, HttpServletResponse response) {
         log.info("swagger登录：{}", new JSONObject(dto));
         Authentication authentication;
         try {
@@ -78,7 +77,7 @@ public class AuthController {
         } catch (BadCredentialsException e) {
             throw new BadCredentialsException("用户名或密码错误", e);
         }
-        authService.setToken(authentication, request);
+        authService.setToken(authentication, request, response);
         return "redirect:/swagger-ui.html";
     }
 }
