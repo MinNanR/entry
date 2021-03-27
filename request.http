@@ -282,8 +282,7 @@ Content-Type: application/json
 Authorization: {{admin_token}}
 
 {
-  "pageIndex": 1,
-  "pageSize": 10
+  "hotelId": 3
 }
 
 ###

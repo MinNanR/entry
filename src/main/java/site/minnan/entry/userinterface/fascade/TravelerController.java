@@ -78,10 +78,9 @@ public class TravelerController {
 
     @PreAuthorize("hasAnyAuthority('ADMIN','HOTEL_USER')")
     @ApiOperation("查询未开始隔离的旅客")
-    @PostMapping("getNotQuarantineTravelerList/{hotelId}")
-    public ResponseEntity<ListQueryVO<TravelerVO>> getNotQuarantineTravelerList(@ApiParam(value = "酒店id", required =
-            true, example = "1") @Valid @PathVariable("hotelId") Integer hotelId){
-        ListQueryVO<TravelerVO> vo = travelerService.getNotQuarantineTravelerList(hotelId);
+    @PostMapping("getNotQuarantineTravelerList")
+    public ResponseEntity<ListQueryVO<TravelerVO>> getNotQuarantineTravelerList(@RequestBody GetNotQuarantineTravelerListDTO dto){
+        ListQueryVO<TravelerVO> vo = travelerService.getNotQuarantineTravelerList(dto);
         return ResponseEntity.success(vo);
     }
 

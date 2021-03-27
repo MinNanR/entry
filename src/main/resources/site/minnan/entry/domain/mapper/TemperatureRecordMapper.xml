@@ -19,10 +19,30 @@
     <!--填充表格-->
     <update id="filTemperatureRecord">
         <foreach collection="dtos" item="item" separator=";">
-            update  entry_temperature_record set status = 'RECORDED',temperature=#{item.temperature},
+            update entry_temperature_record set status = 'RECORDED',temperature=#{item.temperature},
             temperature_normal = #{item.isNormal},measure_time = #{time}, update_user_id = #{userId},
             update_user_name = #{userName}, update_time = #{time}
             where id = #{item.id}
         </foreach>
     </update>
+
+    <!--获取体温测量记录-->
+    <select id="getTemperatureRecordList"
+            resultType="site.minnan.entry.domain.vo.temperture.TemperatureRecordVO">
+        select t1.id, t1.traveler_id, t1.traveler_name, t1.hotel_id, t1.hotel_name, t1.temperature,
+        t1.temperature_normal, t1.measure_time, t1.status, t1.create_user_id, t1.create_user_name,
+        t1.create_time, t1.update_user_id, t1.update_user_name, t1.update_time,
+        t2.quarantine_start_time quarantineStartTime,
+        t2.status travelerStatus
+        from entry_temperature_record t1
+        left join entry_traveler t2 on t1.traveler_id = t2.id
+        where datediff(t1.create_time, #{date}) = 0
+        <if test="hotelId != null and hotelId != ''">
+            and t1.hotel_id = #{hotelId}
+        </if>
+        <if test="travelerName != null and travelerName !=''">
+            and t1.traveler_name like concat('%', #{travelerName}, '%')
+        </if>
+        limit #{start}, #{pageSize}
+    </select>
 </mapper>

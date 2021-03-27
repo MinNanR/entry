@@ -115,9 +115,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             return requestTokenHeader;
         }
         Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if(authenticationHeader.equals(cookie.getName())){
-                return "Bearer " + cookie.getValue();
+        if(ArrayUtil.isNotEmpty(cookies)){
+            for (Cookie cookie : cookies) {
+                if(authenticationHeader.equals(cookie.getName())){
+                    return "Bearer " + cookie.getValue();
+                }
             }
         }
         return null;

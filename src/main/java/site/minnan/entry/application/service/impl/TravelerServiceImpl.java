@@ -21,6 +21,7 @@ import site.minnan.entry.domain.aggregate.Traveler;
 import site.minnan.entry.domain.entity.JwtUser;
 import site.minnan.entry.domain.mapper.TravelerMapper;
 import site.minnan.entry.domain.vo.ListQueryVO;
+import site.minnan.entry.domain.vo.temperture.TemperatureRecordVO;
 import site.minnan.entry.domain.vo.traveler.*;
 import site.minnan.entry.infrastructure.enumerate.Gender;
 import site.minnan.entry.infrastructure.enumerate.TravelerStatus;
@@ -46,6 +47,10 @@ public class TravelerServiceImpl implements TravelerService {
     @Autowired
     @Qualifier("BlankFilter")
     private Function<String, Optional<String>> blankFilter;
+
+    @Autowired
+    @Qualifier("EndOfDay")
+    private Function<String, DateTime> endOfDay;
 
     /**
      * 添加旅客
@@ -82,11 +87,12 @@ public class TravelerServiceImpl implements TravelerService {
     public ListQueryVO<TravelerVO> getTravelerList(GetTravelerListDTO dto) {
         QueryWrapper<Traveler> queryWrapper = new QueryWrapper<>();
         if (StrUtil.isNotBlank(dto.getStartTime()) && StrUtil.isNotBlank(dto.getEndTime())) {
-            DateTime startTime = DateUtil.parse(dto.getStartTime(), "yyyy-MM-dd HH:mm");
-            DateTime endTime = DateUtil.parse(dto.getEndTime(), "yyyy-MM-dd HH:mm");
+            DateTime startTime = DateUtil.parse(dto.getStartTime(), "yyyy-MM-dd");
+            DateTime endTime = endOfDay.apply(dto.getEndTime());
             queryWrapper.between("entry_time", startTime, endTime);
         }
         blankFilter.apply(dto.getName()).ifPresent(s -> queryWrapper.like("name", s));
+        queryWrapper.orderByDesc("update_time");
         Page<Traveler> queryPage = new Page<>(dto.getPageIndex(), dto.getPageSize());
         IPage<Traveler> page = travelerMapper.selectPage(queryPage, queryWrapper);
         List<TravelerVO> list = page.getRecords().stream().map(TravelerVO::assemble).collect(Collectors.toList());
@@ -121,7 +127,8 @@ public class TravelerServiceImpl implements TravelerService {
         if (traveler == null) {
             throw new EntityNotExistException("旅客不存在");
         }
-        return new TravelerArchive(traveler);
+        List<TemperatureRecordVO> recordList = temperatureProviderService.getTemperatureRecordByTraveler(travelerId);
+        return new TravelerArchive(traveler, recordList);
     }
 
     /**
@@ -184,10 +191,10 @@ public class TravelerServiceImpl implements TravelerService {
      * @return
      */
     @Override
-    public ListQueryVO<TravelerVO> getNotQuarantineTravelerList(Integer hotelId) {
+    public ListQueryVO<TravelerVO> getNotQuarantineTravelerList(GetNotQuarantineTravelerListDTO dto) {
         QueryWrapper<Traveler> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("status", TravelerStatus.NOT_QUARANTINE);
-        Optional.ofNullable(hotelId).ifPresent(s -> queryWrapper.eq("hotel_id", s));
+        Optional.ofNullable(dto.getHotelId()).ifPresent(s -> queryWrapper.eq("hotel_id", s));
         List<Traveler> travelerList = travelerMapper.selectList(queryWrapper);
         List<TravelerVO> list = travelerList.stream().map(TravelerVO::assemble).collect(Collectors.toList());
         return new ListQueryVO<>(list, null);
@@ -245,6 +252,10 @@ public class TravelerServiceImpl implements TravelerService {
      */
     @Override
     public HotelData getHotelData(GetHotelDataDTO dto) {
+        blankFilter.apply(dto.getEndTime()).ifPresent(s -> {
+            String endTime = DateUtil.format(DateUtil.endOfDay(DateUtil.parseDate(s)), "yyyy-MM-dd HH:mm:ss");
+            dto.setEndTime(endTime);
+        });
         return travelerMapper.getHotelData(dto);
     }
 
@@ -281,8 +292,11 @@ public class TravelerServiceImpl implements TravelerService {
         List<Traveler> travelerList = travelerMapper.selectList(queryWrapper);
         Map<String, List<Traveler>> groupByNationality = travelerList.stream()
                 .collect(Collectors.groupingBy(Traveler::getNationality));
-        Map<String, Integer> nationalityData = new HashMap<>();
-        groupByNationality.forEach((key, value) -> nationalityData.put(key, value.size()));
+        List<NationalityData> nationalityData = new ArrayList<>();
+        groupByNationality.forEach((key, value) -> nationalityData.add(new NationalityData(key, value.size())));
+        if (!groupByNationality.containsKey("外国")) {
+            nationalityData.add(new NationalityData("外国", 0));
+        }
         List<Traveler> chineseList = groupByNationality.get("中国");
         AreaData provinceData = new AreaData();
         chineseList.stream()

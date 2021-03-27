@@ -3,9 +3,12 @@ package site.minnan.entry.domain.vo.temperture;
 import cn.hutool.core.date.DateUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import site.minnan.entry.domain.aggregate.TemperatureRecord;
+import site.minnan.entry.domain.aggregate.Traveler;
 import site.minnan.entry.infrastructure.enumerate.TemperatureRecordStatus;
 
 /**
@@ -13,6 +16,8 @@ import site.minnan.entry.infrastructure.enumerate.TemperatureRecordStatus;
  */
 @ApiModel("体温测量记录展示数据")
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class TemperatureRecordVO {
 
@@ -43,6 +48,15 @@ public class TemperatureRecordVO {
     @ApiModelProperty(value = "检测时间（格式：yyyy-MM-dd HH:mm）", example = "2021-03-17 09:00")
     private String measureTime;
 
+    @ApiModelProperty(value = "隔离开始见(yyyy-MM-dd", example = "2021-03-20")
+    private String quarantineStartTime;
+
+    @ApiModelProperty(value = "旅客状态", example = "隔离中")
+    private String travelerStatus;
+
+    @ApiModelProperty(value = "旅客状态码", example = "QUARANTINE", allowableValues = "QUARANTINE-隔离中,RELEASED-解除隔离")
+    private String travelerStatusCode;
+
     public static TemperatureRecordVO assemble(TemperatureRecord record) {
         TemperatureRecordVOBuilder builder = builder()
                 .id(record.getId())
@@ -58,6 +72,11 @@ public class TemperatureRecordVO {
                     .isNormal(record.getTemperatureNormal());
         }
         return builder.build();
+    }
 
+    public void setTravelerInfo(Traveler traveler) {
+        this.quarantineStartTime = DateUtil.formatDate(traveler.getQuarantineStartTime());
+        this.travelerStatus = traveler.getStatus().getStatus();
+        this.travelerStatusCode = traveler.getStatus().getValue();
     }
 }

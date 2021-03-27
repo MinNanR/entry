@@ -97,6 +97,16 @@ public class TravelerProviderServiceImpl implements TravelerProviderService {
             traveler.setUpdateUser(user);
         }
         travelerMapper.travelerArrive(travelerList);
+    }
 
+    /**
+     * 批量获取旅客信息
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public List<Traveler> getTravelerListByIds(Collection<Integer> ids) {
+        return travelerMapper.selectBatchIds(ids);
     }
 }

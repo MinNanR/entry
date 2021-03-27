@@ -10,7 +10,9 @@ import site.minnan.entry.EntryApplication;
 import site.minnan.entry.domain.aggregate.Train;
 import site.minnan.entry.domain.mapper.TrainMapper;
 
+import java.sql.Struct;
 import java.util.List;
+import java.util.Objects;
 
 @SpringBootTest(classes = EntryApplication.class)
 public class TestTimeSelect {
@@ -27,6 +29,19 @@ public class TestTimeSelect {
     }
 
     public static void main(String[] args) {
-        System.out.println(DateUtil.today());
+        for (int i = 0; i < 16; i++) {
+            String binaryString = Integer.toBinaryString(i);
+            StringBuilder stringBuilder = new StringBuilder();
+            int length = binaryString.length();
+            for (int j = 0; j < length; j++) {
+                if (Objects.equals(binaryString.charAt(j), '1')) {
+                    stringBuilder.append((char) (65 + (length - 1 - j)));
+                    stringBuilder.insert(0, 1);
+                }
+            }
+            System.out.println(i + "--->" + binaryString + "--->" + stringBuilder.reverse().toString());
+        }
     }
+
+
 }

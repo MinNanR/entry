@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 public class AreaData {
 
-    @ApiModelProperty("国籍")
+    @ApiModelProperty("地区")
     private List<String> areaList;
 
     @ApiModelProperty("数量")

@@ -66,10 +66,10 @@ public interface TravelerService {
     /**
      * 获取未开始隔离的旅客列表
      *
-     * @param hotelId
+     * @param dto
      * @return
      */
-    ListQueryVO<TravelerVO> getNotQuarantineTravelerList(Integer hotelId);
+    ListQueryVO<TravelerVO> getNotQuarantineTravelerList(GetNotQuarantineTravelerListDTO dto);
 
     /**
      * 开始隔离

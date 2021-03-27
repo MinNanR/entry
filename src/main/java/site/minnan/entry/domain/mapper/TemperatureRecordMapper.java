@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 import site.minnan.entry.domain.aggregate.TemperatureRecord;
 import site.minnan.entry.domain.entity.JwtUser;
+import site.minnan.entry.domain.vo.temperture.TemperatureRecordVO;
+import site.minnan.entry.userinterface.dto.temperture.GetTemperatureRecordDTO;
 import site.minnan.entry.userinterface.dto.temperture.RecordTemperatureDTO;
 
 import java.sql.Timestamp;
@@ -34,4 +36,13 @@ public interface TemperatureRecordMapper extends BaseMapper<TemperatureRecord> {
      */
     void filTemperatureRecord(@Param("dtos") Collection<RecordTemperatureDTO> dtos, @Param("time") Timestamp time,
                               @Param("userId") Integer userId, @Param("userName") String userName);
+
+
+    /**
+     * 查询体温测量记录
+     *
+     * @param dto
+     * @return
+     */
+    List<TemperatureRecordVO> getTemperatureRecordList(GetTemperatureRecordDTO dto);
 }

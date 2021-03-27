@@ -2,13 +2,12 @@ package site.minnan.entry.application.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,6 +30,7 @@ import site.minnan.entry.userinterface.dto.train.*;
 
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -48,6 +48,14 @@ public class TrainServiceImpl implements TrainService {
     @Autowired
     @Qualifier("BlankFilter")
     private Function<String, Optional<String>> blankFilter;
+
+    @Autowired
+    @Qualifier("EndOfDayString")
+    private Function<String, String> endOfDayString;
+
+    @Autowired
+    @Qualifier("EndOfDay")
+    private Function<String, DateTime> endOfDay;
 
     /**
      * 添加车次
@@ -102,10 +110,15 @@ public class TrainServiceImpl implements TrainService {
     @Override
     public ListQueryVO<TrainVO> getTrainList(GetTrainListDTO dto) {
         QueryWrapper<Train> queryWrapper = new QueryWrapper<>();
+        blankFilter.apply(dto.getEndTime()).ifPresent(s -> {
+            dto.setEndTime(endOfDayString.apply(s));
+        });
         blankFilter.apply(dto.getCarNumber()).ifPresent(s -> queryWrapper.like("car_number", s));
+        if (StrUtil.isNotBlank(dto.getStartTime()) && StrUtil.isNotBlank(dto.getEndTime())) {
+            queryWrapper.between("create_time", dto.getStartTime(), dto.getEndTime());
+        }
         Integer totalCount = trainMapper.selectCount(queryWrapper);
-        List<TrainData> trainList = totalCount > 0 ? trainMapper.getTrainList(dto.getCarNumber(), dto.getStart(),
-                dto.getPageSize()) : ListUtil.empty();
+        List<TrainData> trainList = totalCount > 0 ? trainMapper.getTrainList(dto) : ListUtil.empty();
         List<TrainVO> list = trainList.stream().map(TrainVO::assemble).collect(Collectors.toList());
         return new ListQueryVO<>(list, totalCount);
     }
@@ -158,7 +171,7 @@ public class TrainServiceImpl implements TrainService {
         blankFilter.apply(dto.getCarNumber()).ifPresent(s -> queryWrapper.like("car_number", s));
         queryWrapper.eq("status", TrainStatus.DEPARTED);
         Integer totalCount = trainMapper.selectCount(queryWrapper);
-        List<TrainData> trainList = totalCount > 0 ? trainMapper.getNotArrivedTrainList(dto.getCarNumber(),dto.getHotelId())
+        List<TrainData> trainList = totalCount > 0 ? trainMapper.getNotArrivedTrainList(dto.getCarNumber(), dto.getHotelId())
                 : ListUtil.empty();
         List<ArrivingTrainVO> list = trainList.stream().map(ArrivingTrainVO::assemble).collect(Collectors.toList());
         return new ListQueryVO<>(list, totalCount);
@@ -217,7 +230,10 @@ public class TrainServiceImpl implements TrainService {
         queryWrapper.eq("status", TrainStatus.ARRIVED);
         Optional.ofNullable(dto.getHotelId()).ifPresent(s -> queryWrapper.eq("hotel_id", s));
         if (StrUtil.isNotBlank(dto.getStartTime()) && StrUtil.isNotBlank(dto.getEndTime())) {
-            queryWrapper.between("arrive_time", dto.getStartTime(), dto.getEndTime());
+            DateTime startTime = DateUtil.parseDate(dto.getStartTime());
+            String endTime = endOfDayString.apply(dto.getEndTime());
+            dto.setEndTime(endTime);
+            queryWrapper.between("arrive_time", startTime, endTime);
         }
         Integer totalCount = trainMapper.selectCount(queryWrapper);
         List<TrainData> trainList = totalCount > 0 ? trainMapper.getArrivedTrainList(dto) : ListUtil.empty();

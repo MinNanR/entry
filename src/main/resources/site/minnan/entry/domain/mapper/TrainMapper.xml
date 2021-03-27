@@ -17,6 +17,9 @@
         <if test="carNumber != null and carNumber != ''">
             and t1.car_number like concat('%', #{carNumber}, '%')
         </if>
+        <if test="startTime != null and startTime != '' and endTime != null and endTime != ''">
+            and t1.create_time between #{startTime} and #{endTime}
+        </if>
         order by t1.update_time desc
         limit #{start},#{pageSize}
     </select>
@@ -58,6 +61,5 @@
             and t1.arrive_time between #{startTime} and #{endTime}
         </if>
         order by t1.update_time desc
-        limit #{start},#{pageSize}
     </select>
 </mapper>

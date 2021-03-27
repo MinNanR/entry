@@ -10,6 +10,7 @@ import site.minnan.entry.domain.vo.temperture.TemperatureRecordVO;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.TreeMap;
 
 @ApiModel("旅客个人档案")
 @Data
@@ -29,6 +30,9 @@ public class TravelerArchive {
 
     @ApiModelProperty(value = "国籍", example = "中国")
     private String nationality;
+
+    @ApiModelProperty(value = "省份", example = "广东")
+    private String province;
 
     @ApiModelProperty(value = "证件号", example = "441900199703041234")
     private String cardNumber;
@@ -67,10 +71,17 @@ public class TravelerArchive {
         this.birthday = DateUtil.formatDate(traveler.getBirthday());
         this.entryTime = DateUtil.format(traveler.getEntryTime(), "yyyy-MM-dd HH:mm");
         this.portName = traveler.getPortName();
+        this.hotelName = traveler.getHotelName();
+        this.province = traveler.getProvince();
         Optional.ofNullable(traveler.getBoardingTime()).ifPresent(s -> this.boardingTime = DateUtil.format(s, "yyyy-MM-dd HH:mm"));
         Optional.ofNullable(traveler.getQuarantineStartTime()).ifPresent(s -> this.quarantineStartTime = DateUtil.format(s, "yyyy-MM-dd HH:mm"));
         Optional.ofNullable(traveler.getQuarantineEndTime()).ifPresent(s -> this.quarantineEndTime = DateUtil.format(s, "yyyy-MM-dd HH:mm"));
         temperatureRecordList = new ArrayList<>();
+    }
+
+    public TravelerArchive(Traveler traveler, List<TemperatureRecordVO> recordList) {
+        this(traveler);
+        this.temperatureRecordList = recordList;
     }
 
 

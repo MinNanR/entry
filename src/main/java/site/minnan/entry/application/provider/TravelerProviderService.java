@@ -1,8 +1,10 @@
 package site.minnan.entry.application.provider;
 
 import site.minnan.entry.domain.aggregate.Train;
+import site.minnan.entry.domain.aggregate.Traveler;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface TravelerProviderService {
 
@@ -34,4 +36,12 @@ public interface TravelerProviderService {
      * @param trains
      */
     void travelerArrive(Collection<Train> trains);
+
+    /**
+     * 批量获取旅客信息
+     *
+     * @param ids
+     * @return
+     */
+    List<Traveler> getTravelerListByIds(Collection<Integer> ids);
 }

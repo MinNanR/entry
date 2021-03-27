@@ -58,7 +58,7 @@ public class UserController {
     }
 
     @OperateLog(operation = Operation.UPDATE,module = "用户",content = "用户修改信息")
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','PORT_USER','HOTEL_USER')")
     @ApiOperation("修改当前用户的信息（密码和真实姓名)")
     @PostMapping("updateUserInfo")
     public ResponseEntity<?> updateUserInfo(@RequestBody @Valid UpdateUserDTO dto) {
