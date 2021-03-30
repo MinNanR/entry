@@ -1,6 +1,7 @@
 package site.minnan.entry.application.provider.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,15 +41,12 @@ public class TemperatureProviderServiceImpl implements TemperatureProviderServic
         travelerQueryWrapper.eq("status", TravelerStatus.QUARANTINE);
         List<Traveler> travelerList = travelerMapper.selectList(travelerQueryWrapper);//筛选出正在隔离的旅客
         Map<Integer, Traveler> idTravelerMap = travelerList.stream().collect(Collectors.toMap(Traveler::getId, e -> e));
-        log.info("正在隔离的旅客id：{}", idTravelerMap.keySet());
-        List<TemperatureRecord> todayRecord = temperatureRecordMapper.getTodayRecord();//获取已有记录的旅客
-        log.info("已生成今日记录的旅客id：{}", todayRecord.stream().map(TemperatureRecord::getTravelerId).collect(Collectors.toList()));
+        List<TemperatureRecord> todayRecord = temperatureRecordMapper.getTodayRecord(DateUtil.today());//获取已有记录的旅客
         List<Integer> travelerHasRecord =
                 todayRecord.stream().map(TemperatureRecord::getTravelerId).collect(Collectors.toList());
         travelerHasRecord.forEach(idTravelerMap::remove);//去除已经有记录的旅客
         Collection<Traveler> travelers = idTravelerMap.values();
         if (CollectionUtil.isNotEmpty(travelers)) {
-            log.info("需要生成记录的旅客id：{}", travelers.stream().map(Traveler::getId).collect(Collectors.toList()));
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             JwtUser user;
             if (authentication != null) {

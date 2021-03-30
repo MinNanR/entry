@@ -1,7 +1,5 @@
 package site.minnan.entry.infrastructure.log;
 
-import cn.hutool.core.date.DateTime;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import lombok.extern.slf4j.Slf4j;
@@ -11,16 +9,13 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import site.minnan.entry.application.service.LogService;
-import site.minnan.entry.domain.entity.JwtUser;
 import site.minnan.entry.infrastructure.annocation.OperateLog;
 import site.minnan.entry.infrastructure.utils.RedisUtil;
 import site.minnan.entry.infrastructure.utils.WebUtil;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.Duration;
 import java.util.Arrays;
 
 @Aspect

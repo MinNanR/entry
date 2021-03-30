@@ -54,5 +54,15 @@ public class WebConfig implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/login.html").setViewName("login");
     }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/index.html").addResourceLocations("classpath:/index.html");
+        registry.addResourceHandler("/css/**").addResourceLocations("classpath:/css/");
+        registry.addResourceHandler("/js/**").addResourceLocations("classpath:/js/");
+        registry.addResourceHandler("/img/**").addResourceLocations("classpath:/img/");
+        registry.addResourceHandler("/fonts/**").addResourceLocations("classpath:/fonts/");
+        registry.addResourceHandler("/LOGO.svg").addResourceLocations("classpath:/LOGO.svg");
+    }
 }
 

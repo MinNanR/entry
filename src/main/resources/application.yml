@@ -17,7 +17,7 @@ server:
 jwt:
   route:
     authentication:
-      path: /entry/auth/login*/**, /swagger*/**, /webjars/**, /v2/**, /login.html
+      path: /entry/auth/login*/**, /swagger*/**, /webjars/**, /v2/**, /login.html, /index.html, /css/**, /js/**, /fonts/**, /img/**, /LOGO.svg
   header: Authorization
   expiration: 604800
   scret: jilin#
@@ -30,5 +30,5 @@ logging:
 mybatis-plus:
   mapper-locations: /site/minnan/entry/domain/mapper/*.xml
   configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true

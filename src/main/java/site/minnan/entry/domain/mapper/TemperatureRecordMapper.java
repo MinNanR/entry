@@ -19,8 +19,8 @@ import java.util.List;
 @Repository
 public interface TemperatureRecordMapper extends BaseMapper<TemperatureRecord> {
 
-    @Select("select id id, traveler_id travelerId from entry_temperature_record where to_days(create_time) = to_days(now())")
-    List<TemperatureRecord> getTodayRecord();
+    @Select("select id id, traveler_id travelerId from entry_temperature_record where datediff(#{today}, create_time) = 0")
+    List<TemperatureRecord> getTodayRecord(String today);
 
     /**
      * 批量插入记录
